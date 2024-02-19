@@ -108,12 +108,15 @@ function openUnarchiveModal(userId) {
 
         var confirmUnarchiveButton = document.getElementById('confirmUnarchive');
         if (confirmUnarchiveButton) {
-           
             confirmUnarchiveButton.setAttribute('data-user-id', userId);
-            confirmUnarchiveButton.onclick = function () {
-
+            confirmUnarchiveButton.addEventListener('click', function() {
                 unarchiveUser(userId);
-            };
+            });
+        }
+
+        var cancelUnarchiveButton = document.getElementById('cancelUnarchive');
+        if (cancelUnarchiveButton) {
+            cancelUnarchiveButton.addEventListener('click', closeUnarchiveModal);
         }
 
         var overlay = document.getElementById('unarchiveModalOverlay');
@@ -122,18 +125,16 @@ function openUnarchiveModal(userId) {
         }
     }
 }
-//Close Unarchive Modal
+
+// Close Unarchive Modal
 function closeUnarchiveModal() {
     var unarchiveModal = document.getElementById('unarchiveModal');
     if (unarchiveModal) {
         unarchiveModal.style.display = 'none';
-        var overlay = document.getElementById('unarchiveModalOverlay');
-        if (overlay) {
-            overlay.removeEventListener('click', closeUnarchiveModal);
-        }
     }
 }
-//Unarchive 
+
+// Unarchive User
 function unarchiveUser(userId) {
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '/hr_views/unarchive_user/' + userId + '/');
@@ -142,9 +143,10 @@ function unarchiveUser(userId) {
     var csrftoken = getCookie('csrftoken');
     xhr.setRequestHeader('X-CSRFToken', csrftoken);
 
-    xhr.onload = function () {
+    xhr.onload = function() {
         if (xhr.status === 200) {
             closeUnarchiveModal();
+            // Reload the page to reflect the changes
             location.reload();
         } else {
             console.error('Error unarchiving user:', xhr.statusText);
