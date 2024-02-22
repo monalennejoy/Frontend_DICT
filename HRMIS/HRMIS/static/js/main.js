@@ -30,7 +30,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-
   if (cancelLogout) {
     cancelLogout.addEventListener('click', function () {
       logoutModal.style.display = 'none';
@@ -43,6 +42,3 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   };
 });
- 
-
-

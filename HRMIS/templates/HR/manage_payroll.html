@@ -1,53 +1,49 @@
 {% extends "base.html" %}
 {% load static %}
+{% block manage_payroll_js %}<script src ={% static "js/manage_payroll.js" %}> </script>{% endblock manage_payroll_js %}
 {% block content %}
-<div id="importDataModal" class="modal fixed w-full h-full top-0 left-0 hidden overflow-y-auto bg-gray-800 bg-opacity-75">
-    <div class="modal-content bg-white w-96 p-6 rounded shadow-lg">
-        <div class="modal-header flex justify-between items-center border-b pb-3">
-            <h5 class="text-xl font-bold text-gray-800">Import Data</h5>
-        </div>
-        <form method="post" enctype="multipart/form-data" action="{% url 'upload_and_cleanse' %}">
-            {% csrf_token %}
-            <div class="max-w-md bg-white shadow-custom rounded-xl m-2">
-                <label for="file-upload" class="max-w-md bg-white shadow-custom rounded-md m-2 cursor-pointer block">
-                    <div class="flex items-center justify-center border-4 border-dashed rounded-xl p-4">
-                        <svg width="150" height="150" viewBox="0 0 150 150" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M77.75 92.1875H23.4375C20.875 92.1875 18.75 90.0625 18.75 87.5C18.75 84.9375 20.875 82.8125 23.4375 82.8125H77.75L67 72.0625C65.1875 70.25 65.1875 67.25 67 65.4375C68.8125 63.625 71.8125 63.625 73.625 65.4375L92.375 84.1875C92.8125 84.625 93.125 85.125 93.375 85.6875C93.875 86.8125 93.875 88.125 93.375 89.25C93.125 89.8125 92.8125 90.3125 92.375 90.75L73.625 109.5C72.6875 110.438 71.5 110.875 70.3125 110.875C69.125 110.875 67.9375 110.438 67 109.5C66.1283 108.618 65.6394 107.428 65.6394 106.188C65.6394 104.947 66.1283 103.757 67 102.875L77.75 92.125V92.1875ZM131.25 59.375V112.5C131.25 122 123.562 129.688 114.062 129.688H67.1875C57.6875 129.688 50 122 50 112.5V106.25C50 103.688 52.125 101.562 54.6875 101.562C57.25 101.562 59.375 103.688 59.375 106.25V112.5C59.375 116.812 62.875 120.312 67.1875 120.312H114.062C118.375 120.312 121.875 116.812 121.875 112.5V64.0625H92.1875C89.625 64.0625 87.5 61.9375 87.5 59.375V29.6875H67.1875C62.875 29.6875 59.375 33.1875 59.375 37.5V68.75C59.375 71.3125 57.25 73.4375 54.6875 73.4375C52.125 73.4375 50 71.3125 50 68.75V37.5C50 28 57.6875 20.3125 67.1875 20.3125H92.1875C93.4375 20.3125 94.625 20.8125 95.5 21.6875L129.875 56.0625C130.75 56.9375 131.25 58.125 131.25 59.375ZM96.875 54.6875H115.25L96.875 36.3125V54.6875Z" fill="#0F5FC2" fill-opacity="0.760784"/>
-                        </svg>
-                        <input id="file-upload" type="file" name="file" class="hidden">
-                    </div>
-                    <h2 class="text-xl font-semibold text-gray-800 flex justify-center pb-3">Import Data</h2>
-                </label>
-            </div>
-            <div class="flex justify-end mt-4">
-                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md mr-2">Upload and Cleanse</button>
-                <button type="button" class="bg-red-500 text-white px-4 py-2 rounded-md" onclick="closeImportModal()">Close</button>
-            </div>
-        </form>
+<div data-dial-init class="fixed right-6 bottom-6">
+    <div id="speed-dial-menu-square" class="flex flex-col items-center hidden mb-4 py-4 space-y-4 bg-blue-50 rounded-3xl shadow-custom">
+        <button onclick="openCleansedDataModal()" type="button" class="flex flex-col items-center bg-blue-400 rounded-full p-3 shadow-custom hover:bg-green-400 hover:text-green-500">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M9 3H5C4.46957 3 3.96086 3.21071 3.58579 3.96086C3.21071 3.96086 3 4.46957 3 5V9M9 3H19C19.5304 3 20.0391 3.21071 20.4142 3.58579C20.7893 3.96086 21 4.46957 21 5V9M9 3V21M3 9V19C3 19.5304 3.21071 20.0391 3.58579 20.4142C3.96086 20.7893 4.46957 21 5 21H9M3 9H21M21 9V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H9" stroke="#FFFFFF" stroke-opacity="0.760784" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="button-name font-bold mt-1">Excels</span>
+        </button>
+        <button onclick="openImportModal()" type="button" class="flex flex-col items-center bg-blue-300 rounded-full p-3 shadow-custom hover:bg-green-300 hover:text-green-500">
+            <svg width="27" height="27" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12.44 14.75H3.75C3.34 14.75 3 14.41 3 14C3 13.59 3.34 13.25 3.75 13.25H12.44L10.72 11.53C10.43 11.24 10.43 10.76 10.72 10.47C11.01 10.18 11.49 10.18 11.78 10.47L14.78 13.47C14.85 13.54 14.9 13.62 14.94 13.71C15.02 13.89 15.02 14.1 14.94 14.28C14.9 14.37 14.85 14.45 14.78 14.52L11.78 17.52C11.63 17.67 11.44 17.74 11.25 17.74C11.06 17.74 10.87 17.67 10.72 17.52C10.5805 17.3789 10.5023 17.1884 10.5023 16.99C10.5023 16.7916 10.5805 16.6011 10.72 16.46L12.44 14.74V14.75ZM21 9.5V18C21 19.52 19.77 20.75 18.25 20.75H10.75C9.23 20.75 8 19.52 8 18V17C8 16.59 8.34 16.25 8.75 16.25C9.16 16.25 9.5 16.59 9.5 17V18C9.5 18.69 10.06 19.25 10.75 19.25H18.25C18.94 19.25 19.5 18.69 19.5 18V10.25H14.75C14.34 10.25 14 9.91 14 9.5V4.75H10.75C10.06 4.75 9.5 5.31 9.5 6V11C9.5 11.41 9.16 11.75 8.75 11.75C8.34 11.75 8 11.41 8 11V6C8 4.48 9.23 3.25 10.75 3.25H14.75C14.95 3.25 15.14 3.33 15.28 3.47L20.78 8.97C20.92 9.11 21 9.3 21 9.5ZM15.5 8.75H18.44L15.5 5.81V8.75Z" fill="#FFFFFF" fill-opacity="0.760784"/>
+            </svg>
+            <span class="button-name font-bold mt-1" title="Import">Import</span>
+        </button>
     </div>
+
+    <button type="button" data-dial-toggle="speed-dial-menu-square" aria-controls="speed-dial-menu-default" aria-expanded="false" class="flex items-center justify-center text-white rounded-full w-14 h-14 transform transition duration-300 ease-in-out">
+        <svg class="w-4 h-4 transition-transform group-hover:rotate-45" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
+        </svg>
+    </button>
 </div>
 
-
-
-<button class="bg-blue-500 text-white py-2 px-4 rounded" onclick="openImportModal()">Open Upload Modal</button>
 <div class="py-3">
     <table class="shadow-custom" style="margin-left: 1%; width: 98%;">
         <thead class="bg-custom-blue text-white" >
             <tr>
-                <th>No:</th>
                 <th>Name</th>
-                <th>Role</th>
+                <th>Employee ID</th>
+                <th>Salary Grade</th>
                 <th>Attendance</th>
                 <th>Action</th>
             </tr>
         </thead>
         <tbody class="bg-white">
+            {% for user in users_with_attendance %}
             <tr>
-                <td  class="text-center align-middle" style="padding-top: 20px; padding-bottom: 20px">sample</td>
-                <td  class="text-center align-middle" style="padding-top: 20px; padding-bottom: 20px">sample</td>
-                <td  class="text-center align-middle "style="padding-top: 20px; padding-bottom: 20px">sample</td>
+                <td class="text-center align-middle" style="padding-top: 20px; padding-bottom: 20px">{{ user.name }}</td>
+                <td class="text-center align-middle" style="padding-top: 20px; padding-bottom: 20px">{{ user.username }}</td>
+                <td class="text-center align-middle" style="padding-top: 20px; padding-bottom: 20px">{{ user.salary_grade }}</td>
                 <td class="flex items-center justify-center" style="padding-top: 20px; padding-bottom: 20px">
-                    <button class="flex items-center bg-custom-blue text-white text-xs p-2 rounded-md">
+                    <button class="flex items-center bg-custom-blue text-white text-xs p-2 rounded-md" onclick="showUserAttendance('{{ user.username }}')">
                         <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" class="text-lg mr-1" viewBox="0 0 24 24">
                             <path fill-rule="evenodd" clip-rule="evenodd" d="M20 4H4C3.73478 4 3.48043 4.10536 3.29289 4.29289C3.10536 4.48043 3 4.73478 3 5V19C3 19.2652 3.10536 19.5196 3.29289 19.7071C3.48043 19.8946 3.73478 20 4 20H20C20.2652 20 20.5196 19.8946 20.7071 19.7071C20.8946 19.5196 21 19.2652 21 19V5C21 4.73478 20.8946 4.48043 20.7071 4.29289C20.5196 4.10536 20.2652 4 20 4ZM4 2C3.20435 2 2.44129 2.31607 1.87868 2.87868C1.31607 3.44129 1 4.20435 1 5V19C1 19.7956 1.31607 20.5587 1.87868 21.1213C2.44129 21.6839 3.20435 22 4 22H20C20.7956 22 21.5587 21.6839 22.1213 21.1213C22.6839 20.5587 23 19.7956 23 19V5C23 4.20435 22.6839 3.44129 22.1213 2.87868C21.5587 2.31607 20.7956 2 20 2H4ZM6 7H8V9H6V7ZM11 7C10.7348 7 10.4804 7.10536 10.2929 7.29289C10.1054 7.48043 10 7.73478 10 8C10 8.26522 10.1054 8.51957 10.2929 8.70711C10.4804 8.89464 10.7348 9 11 9H17C17.2652 9 17.5196 8.89464 17.7071 8.70711C17.8946 8.51957 18 8.26522 18 8C18 7.73478 17.8946 7.48043 17.7071 7.29289C17.5196 7.10536 17.2652 7 17 7H11ZM8 11H6V13H8V11ZM10 12C10 11.7348 10.1054 11.4804 10.2929 11.2929C10.4804 11.1054 10.7348 11 11 11H17C17.2652 11 17.5196 11.1054 17.7071 11.2929C17.8946 11.4804 18 11.7348 18 12C18 12.2652 17.8946 12.5196 17.7071 12.7071C17.5196 12.8946 17.2652 13 17 13H11C10.7348 13 10.4804 12.8946 10.2929 12.7071C10.1054 12.5196 10 12.2652 10 12ZM8 15H6V17H8V15ZM10 16C10 15.7348 10.1054 15.4804 10.2929 15.2929C10.4804 15.1054 10.7348 15 11 15H17C17.2652 15 17.5196 15.1054 17.7071 15.2929C17.8946 15.4804 18 15.7348 18 16C18 16.2652 17.8946 16.5196 17.7071 16.7071C17.5196 16.8946 17.2652 17 17 17H11C10.7348 17 10.4804 16.8946 10.2929 16.7071C10.1054 16.5196 10 16.2652 10 16Z"/>
                         </svg>
@@ -55,15 +51,11 @@
                     </button>                    
                 </td>
                 <td class="text-center align-middle" style="padding-top: 20px; padding-bottom: 20px">
-                    <button class="bg-custom-button1 p-2 rounded-md relative group">
+                    <button class="bg-custom-button1 p-2 rounded-md" onclick="calculateSalary('{{ user.username }}')">
                         <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" class="text-lg text-custom-color-blue" viewBox="0 0 24 24">
                             <path d="M23.205 11.745C22.3229 9.46324 20.7915 7.48996 18.8001 6.06906C16.8088 4.64817 14.4447 3.84193 12 3.75C9.55544 3.84193 7.19134 4.64817 5.19995 6.06906C3.20856 7.48996 1.67717 9.46324 0.795047 11.745C0.735473 11.9098 0.735473 12.0902 0.795047 12.255C1.67717 14.5368 3.20856 16.51 5.19995 17.9309C7.19134 19.3518 9.55544 20.1581 12 20.25C14.4447 20.1581 16.8088 19.3518 18.8001 17.9309C20.7915 16.51 22.3229 14.5368 23.205 12.255C23.2646 12.0902 23.2646 11.9098 23.205 11.745ZM12 18.75C8.02505 18.75 3.82505 15.8025 2.30255 12C3.82505 8.1975 8.02505 5.25 12 5.25C15.975 5.25 20.175 8.1975 21.6975 12C20.175 15.8025 15.975 18.75 12 18.75Z" fill="#0F5FC2" fill-opacity="0.760784"/>
                             <path d="M12 7.5C11.11 7.5 10.24 7.76392 9.49994 8.25839C8.75991 8.75285 8.18314 9.45566 7.84254 10.2779C7.50195 11.1002 7.41283 12.005 7.58647 12.8779C7.7601 13.7508 8.18869 14.5526 8.81802 15.182C9.44736 15.8113 10.2492 16.2399 11.1221 16.4135C11.995 16.5872 12.8998 16.4981 13.7221 16.1575C14.5443 15.8169 15.2471 15.2401 15.7416 14.5001C16.2361 13.76 16.5 12.89 16.5 12C16.5 10.8065 16.0259 9.66193 15.182 8.81802C14.3381 7.97411 13.1935 7.5 12 7.5ZM12 15C11.4067 15 10.8266 14.8241 10.3333 14.4944C9.83994 14.1648 9.45543 13.6962 9.22836 13.148C9.0013 12.5999 8.94189 11.9967 9.05765 11.4147C9.1734 10.8328 9.45912 10.2982 9.87868 9.87868C10.2982 9.45912 10.8328 9.1734 11.4147 9.05764C11.9967 8.94189 12.5999 9.0013 13.1481 9.22836C13.6962 9.45542 14.1648 9.83994 14.4944 10.3333C14.8241 10.8266 15 11.4067 15 12C15 12.7956 14.6839 13.5587 14.1213 14.1213C13.5587 14.6839 12.7957 15 12 15Z"/>
                         </svg>
-                        <div class="opacity-0 w-28 bg-white text-black text-center text-xs rounded-lg py-2 absolute z-10 border-2 border-black group-hover:opacity-100 bottom-full -left-10 px-3 pointer-events-none shadow-md">
-                            View Payroll
-                            <svg class="absolute text-black h-2 w-full left-0 top-full" x="0px" y="0px" viewBox="0 0 255 255" xml:space="preserve"><polygon class="fill-current" points="0,0 127.5,127.5 255,0"/></svg>
-                        </div>
                     </button> 
                     <button class="bg-custom-button1 p-2 rounded-md">
                         <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" class="text-lg text-custom-color-blue" viewBox="0 0 24 24">
@@ -71,39 +63,47 @@
                             <path d="M16 8.75C15.8019 8.74741 15.6126 8.66756 15.4725 8.52747C15.3324 8.38737 15.2526 8.19811 15.25 8V4.75H8.75V8C8.75 8.19891 8.67098 8.38968 8.53033 8.53033C8.38968 8.67098 8.19891 8.75 8 8.75C7.80109 8.75 7.61032 8.67098 7.46967 8.53033C7.32902 8.38968 7.25 8.19891 7.25 8V4.5C7.25 4.16848 7.3817 3.85054 7.61612 3.61612C7.85054 3.3817 8.16848 3.25 8.5 3.25H15.5C15.8315 3.25 16.1495 3.3817 16.3839 3.61612C16.6183 3.85054 16.75 4.16848 16.75 4.5V8C16.7474 8.19811 16.6676 8.38737 16.5275 8.52747C16.3874 8.66756 16.1981 8.74741 16 8.75ZM15.5 20.75H8.5C8.16848 20.75 7.85054 20.6183 7.61612 20.3839C7.3817 20.1495 7.25 19.8315 7.25 19.5V12.5C7.25 12.1685 7.3817 11.8505 7.61612 11.6161C7.85054 11.3817 8.16848 11.25 8.5 11.25H15.5C15.8315 11.25 16.1495 11.3817 16.3839 11.6161C16.6183 11.8505 16.75 12.1685 16.75 12.5V19.5C16.75 19.8315 16.6183 20.1495 16.3839 20.3839C16.1495 20.6183 15.8315 20.75 15.5 20.75ZM8.75 19.25H15.25V12.75H8.75V19.25Z" />  
                         </svg>
                     </button>                    
-                    <button class="bg-green-400 text-white text-xs p-2 rounded-md">
+                    <button class="bg-green-400 text-white text-xs p-2 rounded-md" onclick="openActivatePayslipModal('{{ user.username }}')">
                         <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" class="text-lg" viewBox="0 0 24 24">
                             <path d="M17 19.22H5V7H12V5H5C3.9 5 3 5.9 3 7V19C3 20.1 3.9 21 5 21H17C18.1 21 19 20.1 19 19V12H17V19.22Z" />
                             <path d="M19 2H17V5H14C14.01 5.01 14 7 14 7H17V9.99C17.01 10 19 9.99 19 9.99V7H22V5H19V2ZM7 9H15V11H7V9ZM7 12V14H15V12H12H7ZM7 15H15V17H7V15Z" />
                         </svg>
                     </button>
-                   
                 </td>
             </tr>
+            {% endfor %}
         </tbody>
     </table>
 </div>
 
-<form method="post" action="{% url 'view_excel_content' %}">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="View Excel Content">
-  </form>
-  
-<button onclick="openCleansedDataModal()" class="bg-blue-500 text-white px-4 py-2 rounded">
-    Open Cleansed Data Modal
-</button>
-
-<div id="cleansedDataModal" class="modal fixed top-0 left-0 hidden overflow-y-auto">
-    <div class="modal-dialog flex items-center justify-center min-h-full">
-        <div class="modal-content bg-white max-w-full max-h-full p-6 rounded shadow-lg">
-            <div class="modal-header flex justify-between items-center border-b pb-3">
-                <h5 class="text-xl font-bold">List of Cleansed Excel Files</h5>
+<div id="importDataModal" class="modal fixed hidden overflow-y-auto bg-gray-800 bg-opacity-75">
+    <div class="modal-content w-96 max-h-96">
+        <form method="post" enctype="multipart/form-data" action="{% url 'upload_and_cleanse' %}">
+            {% csrf_token %}
+            <label for="file-upload" class="max-w-md bg-white rounded-md cursor-pointer block">
+                <div class="flex items-center justify-center border-4 border-dashed rounded-xl">
+                    <svg width="150" height="150" viewBox="0 0 150 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M77.75 92.1875H23.4375C20.875 92.1875 18.75 90.0625 18.75 87.5C18.75 84.9375 20.875 82.8125 23.4375 82.8125H77.75L67 72.0625C65.1875 70.25 65.1875 67.25 67 65.4375C68.8125 63.625 71.8125 63.625 73.625 65.4375L92.375 84.1875C92.8125 84.625 93.125 85.125 93.375 85.6875C93.875 86.8125 93.875 88.125 93.375 89.25C93.125 89.8125 92.8125 90.3125 92.375 90.75L73.625 109.5C72.6875 110.438 71.5 110.875 70.3125 110.875C69.125 110.875 67.9375 110.438 67 109.5C66.1283 108.618 65.6394 107.428 65.6394 106.188C65.6394 104.947 66.1283 103.757 67 102.875L77.75 92.125V92.1875ZM131.25 59.375V112.5C131.25 122 123.562 129.688 114.062 129.688H67.1875C57.6875 129.688 50 122 50 112.5V106.25C50 103.688 52.125 101.562 54.6875 101.562C57.25 101.562 59.375 103.688 59.375 106.25V112.5C59.375 116.812 62.875 120.312 67.1875 120.312H114.062C118.375 120.312 121.875 116.812 121.875 112.5V64.0625H92.1875C89.625 64.0625 87.5 61.9375 87.5 59.375V29.6875H67.1875C62.875 29.6875 59.375 33.1875 59.375 37.5V68.75C59.375 71.3125 57.25 73.4375 54.6875 73.4375C52.125 73.4375 50 71.3125 50 68.75V37.5C50 28 57.6875 20.3125 67.1875 20.3125H92.1875C93.4375 20.3125 94.625 20.8125 95.5 21.6875L129.875 56.0625C130.75 56.9375 131.25 58.125 131.25 59.375ZM96.875 54.6875H115.25L96.875 36.3125V54.6875Z" fill="#0F5FC2" fill-opacity="0.760784"/>
+                    </svg>
+                    <input id="file-upload" type="file" name="file" class="hidden" onchange="updateFileName(this)">
+                    <p id="file-name" class="text-sm text-gray-500 hidden">No file chosen</p>
+                </div>
+                <h2 class="text-xl font-semibold text-gray-800 flex justify-center pb-3">Import Data</h2>
+            </label>
+            <div class="flex justify-end">
+                <button type="button" class="bg-transparent hover:bg-blue-500 text-blue-500 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded" onclick="closeImportModal()">Close</button>
+                <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded-md ml-2">Save</button>
             </div>
+        </form>
+    </div>
+</div>   
+<div id="cleansedDataModal" class="modal fixed top-0 left-0 hidden">
+    <div class="modal-dialog flex items-center justify-center min-h-full">
+        <div class="modal-content bg-white max-w-full max-h-full p-6 rounded shadow-lg overflow-y-auto">
             <div class="modal-body">
                 <table class="table-auto w-full">
                     <thead>
-                        <tr>
+                        <tr id="row_{{ cleansed_data.id }}">
                             <th class="px-4 py-2">File Name</th>
                             <th class="px-4 py-2">Upload Date</th>
                             <th class="px-4 py-2">Action</th>
@@ -114,16 +114,16 @@
                             <tr>
                                 <td class="px-4 py-2">{{ cleansed_data.file_name }}</td>
                                 <td class="px-4 py-2">{{ cleansed_data.upload_date|date:"Y-m-d" }}</td>
-                                <td class="px-4 py-2">
-                                    <button class="bg-custom-button1 text-white text-xs p-2 rounded-md">
+                                <td class=" flex space-x-2 px-4 py-2">
+                                    <button class="bg-custom-button1 text-white text-xs p-2 rounded-md" onclick="viewExcel({{ cleansed_data.id }})" >
                                         <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" class="text-lg" viewBox="0 0 24 24">
                                             <path d="M23.205 11.745C22.3229 9.46324 20.7915 7.48996 18.8001 6.06906C16.8088 4.64817 14.4447 3.84193 12 3.75C9.55544 3.84193 7.19134 4.64817 5.19995 6.06906C3.20856 7.48996 1.67717 9.46324 0.795047 11.745C0.735473 11.9098 0.735473 12.0902 0.795047 12.255C1.67717 14.5368 3.20856 16.51 5.19995 17.9309C7.19134 19.3518 9.55544 20.1581 12 20.25C14.4447 20.1581 16.8088 19.3518 18.8001 17.9309C20.7915 16.51 22.3229 14.5368 23.205 12.255C23.2646 12.0902 23.2646 11.9098 23.205 11.745ZM12 18.75C8.02505 18.75 3.82505 15.8025 2.30255 12C3.82505 8.1975 8.02505 5.25 12 5.25C15.975 5.25 20.175 8.1975 21.6975 12C20.175 15.8025 15.975 18.75 12 18.75Z" fill="#0F5FC2" fill-opacity="0.760784"/>
                                             <path d="M12 7.5C11.11 7.5 10.24 7.76392 9.49994 8.25839C8.75991 8.75285 8.18314 9.45566 7.84254 10.2779C7.50195 11.1002 7.41283 12.005 7.58647 12.8779C7.7601 13.7508 8.18869 14.5526 8.81802 15.182C9.44736 15.8113 10.2492 16.2399 11.1221 16.4135C11.995 16.5872 12.8998 16.4981 13.7221 16.1575C14.5443 15.8169 15.2471 15.2401 15.7416 14.5001C16.2361 13.76 16.5 12.89 16.5 12C16.5 10.8065 16.0259 9.66193 15.182 8.81802C14.3381 7.97411 13.1935 7.5 12 7.5ZM12 15C11.4067 15 10.8266 14.8241 10.3333 14.4944C9.83994 14.1648 9.45543 13.6962 9.22836 13.148C9.0013 12.5999 8.94189 11.9967 9.05765 11.4147C9.1734 10.8328 9.45912 10.2982 9.87868 9.87868C10.2982 9.45912 10.8328 9.1734 11.4147 9.05764C11.9967 8.94189 12.5999 9.0013 13.1481 9.22836C13.6962 9.45542 14.1648 9.83994 14.4944 10.3333C14.8241 10.8266 15 11.4067 15 12C15 12.7956 14.6839 13.5587 14.1213 14.1213C13.5587 14.6839 12.7957 15 12 15Z" fill="#0F5FC2"/>
                                         </svg>
                                     </button>
-                                    <button class="bg-green-400 p-2 rounded-md">
+                                    <button class="bg-green-400 p-2 rounded-md" onclick="saveAttendance({{ cleansed_data.id }})">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" class="text-lg" fill="none" viewBox="0 0 24 24">
-                                            <!-- Your SVG path for the second button -->
+                                            <path d="M21.78 5.78C21.9125 5.63782 21.9846 5.44978 21.9812 5.25548C21.9777 5.06118 21.899 4.87579 21.7616 4.73838C21.6242 4.60096 21.4388 4.52225 21.2445 4.51882C21.0502 4.5154 20.8622 4.58752 20.72 4.72L13.22 12.22C13.1463 12.2887 13.0872 12.3715 13.0462 12.4635C13.0052 12.5555 12.9832 12.6548 12.9814 12.7555C12.9796 12.8562 12.9982 12.9562 13.0359 13.0496C13.0736 13.143 13.1297 13.2278 13.201 13.299C13.2722 13.3703 13.357 13.4264 13.4504 13.4641C13.5438 13.5018 13.6438 13.5204 13.7445 13.5186C13.8452 13.5168 13.9445 13.4948 14.0365 13.4538C14.1285 13.4128 14.2113 13.3537 14.28 13.28L21.78 5.78ZM21.947 7.028C21.982 7.197 22 7.371 22 7.55V14.45C22 14.7849 21.934 15.1165 21.8059 15.4258C21.6777 15.7352 21.4899 16.0163 21.2531 16.2531C21.0163 16.4899 20.7352 16.6777 20.4258 16.8059C20.1165 16.934 19.7849 17 19.45 17H4.55C4.21513 17 3.88354 16.934 3.57416 16.8059C3.26478 16.6777 2.98367 16.4899 2.74688 16.2531C2.51009 16.0163 2.32226 15.7352 2.19411 15.4258C2.06596 15.1165 2 14.7849 2 14.45V7.55C2 6.8737 2.26866 6.22509 2.74688 5.74688C3.2251 5.26866 3.8737 5 4.55 5H19.025L17.525 6.5H4.55C3.97 6.5 3.5 6.97 3.5 7.55V14.45C3.5 15.03 3.97 15.5 4.55 15.5H19.45C20.03 15.5 20.5 15.03 20.5 14.45V8.475L21.947 7.028ZM4.5 9.25C4.5 9.05109 4.57902 8.86032 4.71967 8.71967C4.86032 8.57902 5.05109 8.5 5.25 8.5H7.25C7.44891 8.5 7.63968 8.57902 7.78033 8.71967C7.92098 8.86032 8 9.05109 8 9.25C8 9.44891 7.92098 9.63968 7.78033 9.78033C7.63968 9.92098 7.44891 10 7.25 10H5.25C5.05109 10 4.86032 9.92098 4.71967 9.78033C4.57902 9.63968 4.5 9.44891 4.5 9.25ZM4.5 12.75C4.5 12.5511 4.57902 12.3603 4.71967 12.2197C4.86032 12.079 5.05109 12 5.25 12H10.25C10.4489 12 10.6397 12.079 10.7803 12.2197C10.921 12.3603 11 12.5511 11 12.75C11 12.9489 10.921 13.1397 10.7803 13.2803C10.6397 13.421 10.4489 13.5 10.25 13.5H5.25C5.05109 13.5 4.86032 13.421 4.71967 13.2803C4.57902 13.1397 4.5 12.9489 4.5 12.75Z" fill="white"/>
                                         </svg>
                                     </button>
                                 </td>
@@ -132,25 +132,134 @@
                     </tbody>
                 </table>
             </div>
-            <div class="modal-footer border-t pt-3">
-                <button type="button" class="text-gray-500 hover:text-gray-700" onclick="closeCleansedDataModal()">Close</button>
+            <div class="modal-footer flex justify-end">
+                <button type="button" class="bg-transparent hover:bg-blue-500 text-blue-500 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded" onclick="closeCleansedDataModal()">Close</button>
             </div>
         </div>
     </div>
 </div>
 
+<div id="attendanceModal" class="modal fixed top-0 left-0 hidden">
+    <div class="modal-dialog flex items-center justify-center min-h-full">
+        <div class="modal-content bg-white max-w-full max-h-full p-6 rounded shadow-lg overflow-y-auto">
+            <div class="modal-body">
+                <table class="table-auto w-full">
+                    <thead>
+                        <tr>
+                            <th class="px-4 py-2">Date</th>
+                            <th class="px-4 py-2">Time In</th>
+                            <th class="px-4 py-2">Time Out</th>
+                            <th class="px-4 py-2">Remarks</th>
+                            <th class="px-4 py-2">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userAttendanceDetails">
+                        <td class="px-4 py-2">
+                            <button type="button" class="bg-transparent hover:bg-yellow-500 text-yellow-500 font-semibold hover:text-white py-2 px-4 border border-yellow-500 hover:border-transparent rounded mr-2" onclick="editAttendance()">Edit</button>
+                        </td>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer flex justify-end">
+                <button type="button" class="bg-transparent hover:bg-blue-500 text-blue-500 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded mr-2" onclick="closeAttendanceModal()">Add</button>
+                <button type="button" class="bg-transparent hover:bg-red-500 text-blue-500 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded mr-2" onclick="closeAttendanceModal()">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<body class="bg-gray-100">
+    <div id="salaryModal" class="modal fixed w-full h-full top-0 left-0 flex items-center justify-center">
+        <div class="modal-content bg-white p-6 rounded shadow-md" style="width: 30rem;">
+            <div class="flex justify-between w-full">
+                <img src="{% static 'images/DICT Logo.png' %}" alt="Company Logo" class="mx-auto mb-4 logo" style="max-width: 60px;">
+                <div class="text-center">
+                    <p class="text-xs">REPUBLIC OF THE PHILIPPINES</p>
+                    <hr style="width: 180px; border-color: #0F5FC2;">
+                    <p class="text-xs">Department of Information and</p>
+                    <p class="text-xs">Communication Technology</p>
+                </div>
+                <img src="{% static 'images/new logo.png' %}" alt="Company Logo" class="mx-auto mb-4 logo" style="max-width: 70px;">
+            </div>
+            <div class="receipt-header mb-4 text-center">
+                <h2 class="text-2xl font-bold text-gray-500">Salary Receipt</h2>
+                <p id="dateRange" class="text-sm"></p>
+            </div>
+                <div class="receipt-info">
+                    <p class="text-left inline mr-16">Name: _______________</p>
+                    <p class="text-right inline mr-18">Employee ID: _________________</p>
+                </div>
+                
+            <hr class="my-4" style="border-color: black;">
+            <div class="receipt-body">
+                <table class="w-full border-collapse border border-black">
+                    <tr>
+                        <td class="py-2 border border-black pr-2"><strong>Daily Salary:</strong></td>
+                        <td class="py-2 text-right border border-black pr-2">₱<span id="dailySalary" class="font-bold">500</span></td>
+                    </tr>
+                    <tr>
+                        <td class="py-2 border border-black pr-2"><strong>Full Day:</strong></td>
+                        <td class="py-2 text-right border border-black pr-2"><span id="fullAttendanceCount">20</span></td>
+                    </tr>
+                    <tr>
+                        <td class="py-2 border border-black pr-2"><strong>Half Day:</strong></td>
+                        <td class="py-2 text-right border border-black pr-2"><span id="halfAttendanceCount">5</span></td>
+                    </tr>
+                    <tr>
+                        <td class="py-2 border border-black pr-2"><strong>Absent:</strong></td>
+                        <td class="py-2 text-right border border-black pr-2"><span id="absentAttendanceCount">5</span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="py-2 border border-black"><hr class="my-4"></td>
+                    </tr>
+                    <tr class="bg-blue-200">
+                        <td class="py-2 border border-black text-leftpr-2"><strong>Monthly Salary:</strong></td>
+                        <td class="py-2 text-right border border-black pr-2"><span id="monthlySalary" class="font-bold text-black-500">₱15000</span></td>
+                    </tr>                    
+                </table>
+            </div>
+            <div class="receipt-footer mt-4 text-center opacity-50">
+                <p class="text-xs font-serif">**This is a computer-generated payslip.**</p>
+            </div>
+            <div class="receipt-footer mt-4" style="display: flex; justify-content: space-between;">
+                <div>
+                    <p class="mt-4">_________________________</p>
+                    <p class="text-xs">Employee Signature</p>
+                </div>
+                <div>
+                    <p class="mt-4">_________________________</p>
+                    <p class="text-xs">HR Signature</p>
+                </div>
+            </div>
+            
+            <button type="button" class="bg-transparent hover:bg-blue-500 text-blue-500 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded float-right mt-4" onclick="closeSalaryModal()">Close</button>
+        </div>
+    </div>
+</body>
+
+
+<div id="activatePayslipModal" class="modal">
+    <div class="modal-content text-right">
+        <p class="mt-10 font-semibold">Are you sure you want to activate the payslip?</p>
+        <button onclick="closeActivatePayslipModal()" class="bg-transparent hover:bg-blue-500 text-blue-500 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded mt-10">Cancel</button>
+        <button onclick="activatePayslip('{{ username }}')" class="bg-green-400 hover:bg-green-500 hover:text-white text-gray-200 font-bold py-2 px-8 rounded mt-10">Yes</button>
+    </div>
+</div>
 <script>
-    function openImportModal() {
-        var uploadModal = document.getElementById('importDataModal');
-        if (uploadModal) {
-            uploadModal.style.display = 'block';
+    function openAttendanceModal() {
+        var attendanceModal = document.getElementById('attendanceModal');
+        if (attendanceModal) {
+            attendanceModal.classList.remove('hidden');
         }
+        
+        // Here you might add code to fetch and populate attendance details into the modal.
+        // Ensure that the attendance details include the necessary information for the "Edit" button.
     }
     
-    function closeImportModal() {
-        var uploadModal = document.getElementById('importDataModal');
-        if (uploadModal) {
-            uploadModal.style.display = 'none';
+    function closeAttendanceModal() {
+        var attendanceModal = document.getElementById('attendanceModal');
+        if (attendanceModal) {
+            attendanceModal.classList.add('hidden');
         }
     }
     

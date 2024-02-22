@@ -103,20 +103,18 @@ document.addEventListener('DOMContentLoaded', function () {
 //Open Unarchive Modal
 function openUnarchiveModal(userId) {
     var unarchiveModal = document.getElementById('unarchiveModal');
+    console.log('clicked button')
     if (unarchiveModal) {
         unarchiveModal.style.display = 'block';
 
         var confirmUnarchiveButton = document.getElementById('confirmUnarchive');
         if (confirmUnarchiveButton) {
+           
             confirmUnarchiveButton.setAttribute('data-user-id', userId);
-            confirmUnarchiveButton.addEventListener('click', function() {
-                unarchiveUser(userId);
-            });
-        }
+            confirmUnarchiveButton.onclick = function () {
 
-        var cancelUnarchiveButton = document.getElementById('cancelUnarchive');
-        if (cancelUnarchiveButton) {
-            cancelUnarchiveButton.addEventListener('click', closeUnarchiveModal);
+                unarchiveUser(userId);
+            };
         }
 
         var overlay = document.getElementById('unarchiveModalOverlay');
@@ -125,16 +123,18 @@ function openUnarchiveModal(userId) {
         }
     }
 }
-
-// Close Unarchive Modal
+//Close Unarchive Modal
 function closeUnarchiveModal() {
     var unarchiveModal = document.getElementById('unarchiveModal');
     if (unarchiveModal) {
         unarchiveModal.style.display = 'none';
+        var overlay = document.getElementById('unarchiveModalOverlay');
+        if (overlay) {
+            overlay.removeEventListener('click', closeUnarchiveModal);
+        }
     }
 }
-
-// Unarchive User
+//Unarchive 
 function unarchiveUser(userId) {
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '/hr_views/unarchive_user/' + userId + '/');
@@ -143,10 +143,9 @@ function unarchiveUser(userId) {
     var csrftoken = getCookie('csrftoken');
     xhr.setRequestHeader('X-CSRFToken', csrftoken);
 
-    xhr.onload = function() {
+    xhr.onload = function () {
         if (xhr.status === 200) {
             closeUnarchiveModal();
-            // Reload the page to reflect the changes
             location.reload();
         } else {
             console.error('Error unarchiving user:', xhr.statusText);
@@ -291,14 +290,87 @@ function saveNewUser() {
     xhr.send(formData);
 }
 
-// script.js
+function showActiveSearch() {
+    const activeSearchForm = document.getElementById('activeSearchForm');
+    const archiveSearchForm = document.getElementById('archiveSearchForm');
 
-function toggleSpeedDial() {
-    const speedDialMenu = document.querySelector('.fixed .hidden');
-    speedDialMenu.classList.toggle('hidden');
+    if (activeSearchForm && archiveSearchForm) {
+        activeSearchForm.style.display = 'block';
+        archiveSearchForm.style.display = 'none';
+    }
 }
 
-// Add an event listener to the button
-const toggleButton = document.querySelector('.fixed button');
-toggleButton.addEventListener('click', toggleSpeedDial);
+function showArchiveSearch() {
+    const activeSearchForm = document.getElementById('activeSearchForm');
+    const archiveSearchForm = document.getElementById('archiveSearchForm');
 
+    if (activeSearchForm && archiveSearchForm) {
+        archiveSearchForm.style.display = 'block';
+        activeSearchForm.style.display = 'none';
+    }
+}
+
+
+function search() {
+    const searchText = document.getElementById('simple-search').value.toLowerCase(); 
+    const tableRows = document.querySelectorAll('#activeTable tbody tr'); 
+    let found = false;
+
+    tableRows.forEach(row => {
+        const name = row.querySelector('td:nth-child(1)').textContent.toLowerCase(); 
+        const id = row.querySelector('td:nth-child(2)').textContent.toLowerCase(); 
+        if (searchText === '' || name.includes(searchText) || id.includes(searchText)) {
+            row.style.display = 'table-row';
+            found = true; 
+        } else {
+            row.style.display = 'none'; 
+        }
+    });
+
+    const errorMessageRow = document.getElementById('noResultsMessage');
+    errorMessageRow.style.display = found ? 'none' : 'table-row';
+}
+
+function searchArchive() {
+    const searchText = document.getElementById('archive-search').value.toLowerCase(); 
+    const tableRows = document.querySelectorAll('#archiveTable tbody tr'); 
+    let found = false;
+
+    tableRows.forEach(row => {
+        const name = row.querySelector('td:nth-child(1)').textContent.toLowerCase(); 
+        const id = row.querySelector('td:nth-child(2)').textContent.toLowerCase(); 
+        if (searchText === '' || name.includes(searchText) || id.includes(searchText)) {
+            row.style.display = 'table-row'; 
+            found = true; 
+        } else {
+            row.style.display = 'none'; 
+        }
+    });
+
+    const errorMessageRow = document.getElementById('archivedResultsMessage');
+    errorMessageRow.style.display = found ? 'none' : 'table-row';
+}
+document.addEventListener('DOMContentLoaded', function() {
+    const simpleSearchInput = document.getElementById('simple-search');
+    const archiveSearchInput = document.getElementById('archive-search');
+    const activeButton = document.getElementById('activeButton');
+    const archiveButton = document.getElementById('archiveButton');
+
+    if (simpleSearchInput) {
+        simpleSearchInput.addEventListener('input', search);
+    }
+
+    if (archiveSearchInput) {
+        archiveSearchInput.addEventListener('input', searchArchive);
+    }
+
+    if (activeButton) {
+        activeButton.addEventListener('click', showActiveSearch);
+    }
+
+    if (archiveButton) {
+        archiveButton.addEventListener('click', showArchiveSearch);
+    }
+
+    showActiveSearch();
+});
