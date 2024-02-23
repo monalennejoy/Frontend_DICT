@@ -552,3 +552,4 @@ def activate_payslip(request, username):
     else:
         return JsonResponse({'error': 'Invalid request method'})
 
+

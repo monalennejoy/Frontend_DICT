@@ -232,3 +232,38 @@ function activatePayslip() {
     
 }
 
+function showUserAttendance(username) {
+    $.ajax({
+        url: `get_latest_attendance/${username}/`,
+        type: 'GET',
+        success: function(data) {
+            if ('error' in data) {
+                alert(data.error);
+            } else {
+                $('#userAttendanceDetails').empty();
+
+                var tableBody = $('#attendanceModal tbody');
+                tableBody.empty();
+
+                data.attendances.forEach(function(attendance) {
+                    var rowHtml = `
+                        <tr>
+                            <td class="px-4 py-2">${attendance.date}</td>
+                            <td class="px-4 py-2">${attendance.time_in}</td>
+                            <td class="px-4 py-2">${attendance.time_out}</td>
+                            <td class="px-4 py-2">${attendance.remark}</td>
+                            <td class="px-4 py-2">
+                                <button type="button" class="bg-red-100 hover:bg-yellow-500 text-yellow-500 font-semibold hover:text-white py-2 px-4 border border-yellow-500 hover:border-transparent rounded mr-2" onclick="editAttendance()">Edit</button>
+                            </td>
+                        </tr>`;
+                    tableBody.append(rowHtml);
+                });
+
+                $('#attendanceModal').show();
+            }
+        },
+        error: function(error) {
+            console.log('Error:', error);
+        }
+    });
+}

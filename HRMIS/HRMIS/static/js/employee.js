@@ -60,4 +60,5 @@ document.addEventListener('DOMContentLoaded', function () {
         uploadBtnElement.addEventListener('click', uploadProfilePicture);
         openModalBtn.addEventListener('click', openUploadModal);
     }
+    
 });
