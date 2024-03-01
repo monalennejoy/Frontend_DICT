@@ -60,5 +60,45 @@ document.addEventListener('DOMContentLoaded', function () {
         uploadBtnElement.addEventListener('click', uploadProfilePicture);
         openModalBtn.addEventListener('click', openUploadModal);
     }
-    
 });
+
+function openPayrollModal() {
+    var modal = document.getElementById("payrollModal");
+    modal.style.display = "block";
+}
+
+function closePayrollModal() {
+    var modal = document.getElementById("payrollModal");
+    modal.style.display = "none";
+}
+
+
+function openPayslipDetailsModal(payslipId) {
+    var payslipDetailsId = `payslipDetailsContent${payslipId}`;
+    document.getElementById('payrollModal').style.display = 'none';
+
+    var payslipDetailsContainers = document.querySelectorAll('.payslip-details');
+    payslipDetailsContainers.forEach(function(container) {
+        container.style.display = 'none';
+    });
+
+    var selectedPayslipDetails = document.getElementById(payslipDetailsId);
+    if (selectedPayslipDetails) {
+        selectedPayslipDetails.style.display = 'block';
+        document.getElementById('payslipDetailsModal').style.display = 'block';
+    } else {
+        console.error('Payslip details element not found. ID:', payslipDetailsId);
+    }
+}
+
+function goBackToMainModal() {
+    document.getElementById('payslipDetailsModal').style.display = 'none';
+    document.getElementById('payrollModal').style.display = 'block';
+}
+
+function closePayslipDetailsModal() {
+    document.getElementById('payslipDetailsModal').style.display = 'none';
+}
+
+
+

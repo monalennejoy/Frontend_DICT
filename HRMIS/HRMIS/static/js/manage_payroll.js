@@ -118,6 +118,9 @@ function showUserAttendance(username) {
                             <td class="px-4 py-2">${attendance.time_in}</td>
                             <td class="px-4 py-2">${attendance.time_out}</td>
                             <td class="px-4 py-2">${attendance.remark}</td>
+                            <td class="px-4 py-2">
+                            <button type="button" class="bg-red-100 hover:bg-yellow-500 text-yellow-500 font-semibold hover:text-white py-2 px-4 border border-yellow-500 hover:border-transparent rounded mr-2" onclick="editAttendance()">Edit</button>
+                            </td>
                         </tr>`;
                     tableBody.append(rowHtml);
                 });
@@ -144,13 +147,30 @@ function calculateSalary(username) {
         method: 'GET',
         dataType: 'json',
         success: function(data) {
+            console.log(data);
             // Update the modal content with the calculated values
             $('#dailySalary').text(data.daily_salary);
+            $('#basic_salary').text(data.basic_salary);
+            $('#premium').text(data.premium);
+            $('#another_gross_pay').text(data.gross_pay);
+            $('#gross_pay').text(data.gross_pay);
             $('#fullAttendanceCount').text(data.full_attendance_count);
             $('#halfAttendanceCount').text(data.half_attendance_count);
-            $('#absentAttendanceCount').text(data.absent_attendance_count);
-            $('#monthlySalary').text(data.monthly_salary);
+            $('#absentAttendanceCount').text(data.absent_count);
             $('#dateRange').text(data.date_range);
+            $('#employeeName').text(data.name);
+            $('#employeeId').text(username);late_count
+            $('#late_count').text(data.late_attendance_count);
+            $('#late_deduction').text(data.late_deduction);
+            $('#absent_deduction').text(data.absent_deduction);
+            $('#pre_deduction').text(data.pre_deduction);
+            $('#total_deduction').text(data.total_deduction);
+            $('#net_before_tax').text(data.net_before_tax)
+            $('#2_percent').text(data.tax_2_percent);
+            $('#3_percent').text(data.tax_3_percent);
+            $('#number_of_days').text(data.number_of_days);
+            $('#total_net_pay').text(data.total_net_pay);
+            $('#current_date').text(data.current_date);
             // Show the modal
             $('#salaryModal').show();
         },
@@ -186,30 +206,21 @@ function closeActivatePayslipModal() {
 function activatePayslip() {
     var username = $('#activatePayslipModal').data('username');
     var csrftoken = getCookie('csrftoken');
-
-    // Use the correct HTTP method (GET) for calculate_salary endpoint
+    console.log('clicked')
+    // Make a GET request to calculate_salary endpoint
     $.ajax({
         url: `/hr_views/calculate_salary/${username}/`,
-        method: 'GET',  // Keep it as GET
+        method: 'GET',
         dataType: 'json',
         success: function(data) {
             console.log('calculate_salary response:', data);
-
-            // Adjust the data format for the POST request
-            var postData = {
-                daily_salary: data.daily_salary,
-                monthly_salary: data.monthly_salary,
-                full_attendance_count: data.full_attendance_count,
-                half_attendance_count: data.half_attendance_count,
-                absent_attendance_count: data.absent_attendance_count,
-                date_range: data.date_range
-            };
 
             // Use the returned data as the payload for the activate_payslip endpoint
             $.ajax({
                 url: `/hr_views/activate_payslip/${username}/`,
                 method: 'POST',
-                data: postData,  // Send the adjusted data
+                data: JSON.stringify(data),  // Send the data as JSON string
+                contentType: 'application/json',  // Specify the content type
                 dataType: 'json',
                 headers: {
                     'X-CSRFToken': csrftoken
@@ -229,41 +240,23 @@ function activatePayslip() {
             // Display a user-friendly error message or handle the error
         }
     });
-    
 }
+function downloadPdf() {
+    // Show the PDF content section
+    $('#pdfContent').show();
 
-function showUserAttendance(username) {
-    $.ajax({
-        url: `get_latest_attendance/${username}/`,
-        type: 'GET',
-        success: function(data) {
-            if ('error' in data) {
-                alert(data.error);
-            } else {
-                $('#userAttendanceDetails').empty();
+    // Capture the PDF content
+    const element = document.getElementById('pdfContent');
 
-                var tableBody = $('#attendanceModal tbody');
-                tableBody.empty();
-
-                data.attendances.forEach(function(attendance) {
-                    var rowHtml = `
-                        <tr>
-                            <td class="px-4 py-2">${attendance.date}</td>
-                            <td class="px-4 py-2">${attendance.time_in}</td>
-                            <td class="px-4 py-2">${attendance.time_out}</td>
-                            <td class="px-4 py-2">${attendance.remark}</td>
-                            <td class="px-4 py-2">
-                                <button type="button" class="bg-red-100 hover:bg-yellow-500 text-yellow-500 font-semibold hover:text-white py-2 px-4 border border-yellow-500 hover:border-transparent rounded mr-2" onclick="editAttendance()">Edit</button>
-                            </td>
-                        </tr>`;
-                    tableBody.append(rowHtml);
-                });
-
-                $('#attendanceModal').show();
-            }
-        },
-        error: function(error) {
-            console.log('Error:', error);
+    // Use html2pdf to generate the PDF
+    html2pdf(element, {
+        margin: 5,
+        filename: 'salary_receipt.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'mm', format: [162, 125], orientation: 'portrait' },
+        onAfterPdf: function (pdf) {
+            $('#pdfContent').hide();
         }
     });
 }
