@@ -96,51 +96,8 @@ function saveAttendance(cleansedDataId) {
         console.error('Error saving attendance:', error);
     });
 }
-function showUserAttendance(username) {
-    $.ajax({
-        url: `get_latest_attendance/${username}/`,
-        type: 'GET',
-        success: function(data) {
-            if ('error' in data) {
-                alert(data.error);
-            } else {
-                // Clear existing content
-                $('#userAttendanceDetails').empty();
 
-                // Loop through each attendance entry and append to the modal content
-                var tableBody = $('#attendanceModal tbody');
-                tableBody.empty();
-
-                data.attendances.forEach(function(attendance) {
-                    var rowHtml = `
-                        <tr>
-                            <td class="px-4 py-2">${attendance.date}</td>
-                            <td class="px-4 py-2">${attendance.time_in}</td>
-                            <td class="px-4 py-2">${attendance.time_out}</td>
-                            <td class="px-4 py-2">${attendance.remark}</td>
-                            <td class="px-4 py-2">
-                            <button type="button" class="bg-red-100 hover:bg-yellow-500 text-yellow-500 font-semibold hover:text-white py-2 px-4 border border-yellow-500 hover:border-transparent rounded mr-2" onclick="editAttendance()">Edit</button>
-                            </td>
-                        </tr>`;
-                    tableBody.append(rowHtml);
-                });
-
-                // Show the modal
-                $('#attendanceModal').show();
-            }
-        },
-        error: function(error) {
-            console.log('Error:', error);
-        }
-    });
-}
-
-// Function to close the modal
-function closeAttendanceModal() {
-    $('#attendanceModal').hide();
-}
 function calculateSalary(username) {
-    // Use jQuery.ajax() to make the asynchronous request
     console.log('Username:', username);
     $.ajax({
         url: `/hr_views/calculate_salary/${username}/`,
@@ -148,7 +105,6 @@ function calculateSalary(username) {
         dataType: 'json',
         success: function(data) {
             console.log(data);
-            // Update the modal content with the calculated values
             $('#dailySalary').text(data.daily_salary);
             $('#basic_salary').text(data.basic_salary);
             $('#premium').text(data.premium);
@@ -171,7 +127,7 @@ function calculateSalary(username) {
             $('#number_of_days').text(data.number_of_days);
             $('#total_net_pay').text(data.total_net_pay);
             $('#current_date').text(data.current_date);
-            // Show the modal
+
             $('#salaryModal').show();
         },
         error: function(error) {
@@ -241,6 +197,7 @@ function activatePayslip() {
         }
     });
 }
+
 function downloadPdf() {
     // Show the PDF content section
     $('#pdfContent').show();
@@ -260,3 +217,76 @@ function downloadPdf() {
         }
     });
 }
+
+function fetchUserAttendance(username) {
+    console.log('Username:', username);
+    userRole = 'HR'
+    console.log('User Role:', userRole);
+    window.location.href = `/hr_views/get_user_attendance/${userRole}/${username}/`;
+}
+
+// Function to show the progress bar
+function showProgressBar() {
+    document.getElementById('progress-bar-container').style.display = 'inline-block';
+}
+
+// Function to update the progress bar
+function updateProgressBar(progress) {
+    const progressBar = document.getElementById('progress-bar');
+    progressBar.style.width = progress + '%';
+    progressBar.innerText = progress + '%';
+    console.log('Progress:', progress);
+}
+
+// Function to simulate the import process
+function simulateImportProcess(cleansedDataId) {
+    let progress = 0;
+    const targetProgress = 100;
+    const duration = 80;
+    const frames = 100;
+    const increment = targetProgress / frames;
+
+    const interval = setInterval(() => {
+        progress += increment;
+        if (progress >= targetProgress) {
+            clearInterval(interval);
+            progress = targetProgress;
+            updateProgressBar(progress);
+            showDataSuccessModal();
+        } else {
+            updateProgressBar(progress);
+        }
+    }, duration / frames);
+}
+
+// Function to handle the save button click
+function handleSaveButtonClick(cleansedDataId) {
+    const fileInput = document.getElementById('file-upload');
+    if (fileInput.files.length > 0) {
+        showProgressBar();
+        simulateImportProcess(cleansedDataId);
+    }
+}
+
+// Function to show the Import Data Success Modal
+function showDataSuccessModal() {
+    const successModal = document.getElementById('DataSuccessModal');
+    successModal.style.display = 'flex';
+}
+
+// Function to hide the Import Data Success Modal
+function hideDataSuccessModal() {
+    const successModal = document.getElementById('DataSuccessModal');
+    successModal.style.display = 'none';
+}
+
+// Event listener for the close button
+document.getElementById('close-modal-button').addEventListener('click', function() {
+    hideDataSuccessModal();
+});
+
+// Function to enable/disable the Save button based on file selection
+document.getElementById('file-upload').addEventListener('change', function() {
+    const saveButton = document.getElementById('save-button');
+    saveButton.disabled = this.files.length === 0;
+});
