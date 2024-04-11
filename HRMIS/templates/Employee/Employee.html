@@ -62,7 +62,7 @@
     
     <div class="bg-white shadow-custom rounded-xl my-4 md:w-1/3">
         <div class="flex items-center justify-center">
-            <button class="bg-white rounded-md cursor-pointer px-10">
+            <button class="bg-white rounded-md cursor-pointer px-10" onclick="openAttendanceModal()">
                 <svg width="130" height="150" viewBox="0 0 150 150" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path fill-rule="evenodd" clip-rule="evenodd" d="M109.688 24.375C106.26 24.3733 102.88 25.1745 99.8186 26.7146C96.7569 28.2547 94.0985 30.4907 92.0568 33.2434C90.015 35.9961 88.6466 39.1888 88.0612 42.5657C87.4759 45.9426 87.6899 49.4097 88.6861 52.689L89.9536 56.8815L86.8628 59.982L25.8863 120.949C24.671 122.164 23.9882 123.812 23.9882 125.531C23.9882 127.25 24.671 128.898 25.8863 130.114C27.1017 131.329 28.7501 132.012 30.4688 132.012C32.1876 132.012 33.836 131.329 35.0513 130.114L96.0181 69.1275L99.1186 66.027L103.311 67.2945C107.384 68.5352 111.731 68.5637 115.82 67.3764C119.909 66.1891 123.565 63.8373 126.34 60.608C129.116 57.3787 130.891 53.4115 131.451 49.1902C132.01 44.9689 131.329 40.6761 129.49 36.8355L114.865 51.4702C114.191 52.169 113.384 52.7264 112.492 53.1101C111.6 53.4937 110.641 53.6959 109.67 53.7048C108.699 53.7137 107.736 53.5291 106.837 53.1619C105.938 52.7946 105.121 52.252 104.434 51.5658C103.747 50.8795 103.204 50.0633 102.836 49.1648C102.468 48.2663 102.282 47.3035 102.29 46.3325C102.298 45.3616 102.5 44.402 102.882 43.5096C103.265 42.6173 103.822 41.8101 104.52 41.1352L119.145 26.5102C116.193 25.0958 112.961 24.3725 109.688 24.375ZM73.1251 46.3125C73.1257 38.8157 75.4309 31.5003 79.7282 25.3574C84.0255 19.2145 90.1072 14.541 97.1494 11.9702C104.192 9.39938 111.854 9.05544 119.098 10.985C126.342 12.9145 132.818 17.0243 137.649 22.7575C142.479 28.4907 145.43 35.5701 146.103 43.0367C146.775 50.5033 145.136 57.9961 141.407 64.4999C137.679 71.0038 132.041 76.2043 125.258 79.397C118.475 82.5896 110.875 83.62 103.487 82.3485L98.0948 87.75L107.25 96.915L111.833 92.3325L117 87.165L122.168 92.3325L140.449 110.614C142.457 112.562 144.058 114.89 145.159 117.462C146.259 120.035 146.837 122.8 146.858 125.598C146.879 128.396 146.344 131.17 145.283 133.759C144.222 136.348 142.657 138.7 140.679 140.679C138.7 142.657 136.348 144.222 133.759 145.283C131.17 146.344 128.396 146.879 125.598 146.858C122.8 146.836 120.035 146.259 117.462 145.158C114.89 144.058 112.562 142.457 110.614 140.449L92.3326 122.167L87.1651 117L92.3326 111.832L96.9151 107.25L87.7501 98.085L45.3863 140.449C43.4384 142.457 41.1105 144.058 38.538 145.158C35.9655 146.259 33.1998 146.836 30.402 146.858C27.6042 146.879 24.83 146.344 22.241 145.283C19.652 144.222 17.2998 142.657 15.3214 140.679C13.3429 138.7 11.7778 136.348 10.7169 133.759C9.6561 131.17 9.12082 128.396 9.14222 125.598C9.16362 122.8 9.74129 120.035 10.8416 117.462C11.9419 114.89 13.5429 112.562 15.5513 110.614L57.9053 68.25L34.1251 44.46L28.1093 50.4757L23.1661 43.056L13.4161 28.431L10.0913 23.439L14.3326 19.2075L19.2076 14.3325L23.4391 10.0912L28.4311 13.416L43.0561 23.166L50.4758 28.1092L44.4698 34.125L68.2501 57.915L73.6516 52.5135C73.3011 50.4651 73.1249 48.3907 73.1251 46.3125ZM117 107.835L130.114 120.949C131.329 122.164 132.012 123.812 132.012 125.531C132.012 127.25 131.329 128.898 130.114 130.114C128.898 131.329 127.25 132.012 125.531 132.012C123.813 132.012 122.164 131.329 120.949 130.114L107.845 117L117 107.835Z" fill="#0F5FC2" fill-opacity="0.760784"/>
                 </svg> 
@@ -70,6 +70,7 @@
         </div>
         <h2 class="text-xl font-semibold text-gray-800 flex justify-center pb-3">Coming Soon</h2>
     </div>
+    
     
     <div class="bg-white shadow-custom rounded-xl my-4 md:w-1/3">
         <div class="flex items-center justify-center">
@@ -140,201 +141,379 @@
                 </div>
             {% endif %}
         </div>
+        <div class="items-center px-4 py-3">
+            <button onclick="closePayrollModal()" class="px-4 py-2 bg-blue-500 text-white
+                text-base font-medium rounded-md w-full
+                shadow-sm hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300">
+                Close
+            </button>
+        </div>
     </div>
 </div>
 
 
 <div id="payslipDetailsModal" class="modal fixed top-0 left-0 flex items-center justify-center" style="display: none;">
     <div class="modal-content bg-white p-6 rounded shadow-md" style="width: 30rem;" id="payslipDetailsContainer{{ payslip.id }}">
-        {% for payslip in user_payslips %}
-        <div id="payslipDetailsContent{{ payslip.id }}">
-            <div class="border border-black rounded-lg flex w-full">
-                <div class="p-1">                
-                    <img src="{% static 'images/DICT Logo.png' %}" alt="Company Logo" class="w-16 h-16 mx-auto align-middle">                 
-                </div>
-                <div class="flex-col flex justify-center items-center">                
-                    <div class="text-xs text-center text-blue-700">REPUBLIC OF THE PHILIPPINES</div>     
-                    <div class="border-t-2 border-blue-500 text-xs text-center font-medium text-blue-700">DEPARTMENT OF INFORMATIONS AND</div>
-                    <div class="text-xs text-center font-medium text-blue-700">COMMUNICATIONS TECHNLOGY</div>                 
-                </div>
-                <div class="flex-col flex-1 border-l border-black ml-3">                     
-                    <div class="text-xs text-center font-medium text-gray-900 h-1/2 flex justify-center items-center">PAYSLIP </div>                 
-                    <div class="text-xs font-medium text-gray-900 h-1/2 p-1 flex items-center border-t border-black">DATE: {{ payslip.current_date }}</span></div> 
-                </div>            
-            </div>
-            <div class="receipt-body">
-                <table class="w-full mt-1 border-t border-r border-l border-black" style="font-size: 0.6rem;">
-                    <tr>
-                        <td class="py-1 w-1/3 pl-1"><strong>OFFICE AFFILATION:</strong></td>
-                        <td class="py-1 text-right pr-1">DICT REGION 4A</td>
-                    </tr>
-                    <tr>
-                        <td class="py-1 w-1/3 pl-1 "><strong>EMPLOYEE NO:</strong></td>
-                        <td class="py-1 text-right  pr-1">{{ payslip.user }}</td>
-                    </tr>
-                    <tr>
-                        <td class="py-1 w-1/3 pl-1"><strong>EMPLOYEE NAME:</strong></td>
-                        <td class="py-1 text-right pr-1">{{ payslip.user.name }}</span></td>
-                    </tr>
-                    <tr>
-                        <td class="py-1 w-1/3 pl-1"><strong>POSITION:</strong></td>
-                        <td class="py-1 text-right pr-1"><span id="position"></span></td>
-                    </tr>
-                    <tr>
-                        <td colspan="2" class="py-1 border-t border-black pl-1"><strong>NUMBER OF DAYS IN A MONTH:</strong> 22</td>
-                    </tr>
-                    <table class="w-full" style="font-size: 0.6rem">
-                        <thead>
-                            <tr>
-                                <th class="py-1 border border-black pr-1" rowspan='2' style="font-size: 0.6rem;">GROSS EARNING</th>
-                                <th class="py-1 border-t border-b border-black pr-1" rowspan='2' style="font-size: 0.6rem;">DEDUCTION</th>
-                                <th class="py-1 border-t border-l border-black pr-1" colspan="2" style="font-size: 0.6rem;">DATE</th>
-                                <th class="py-1 border border-black pr-1" rowspan='2' style="font-size: 0.6rem;">NET EARNINGS</th>
-                            </tr>
-                            <tr>
-                                <th class="py-1 border border-black pr-1" style="font-size: 0.6rem;">START</th>
-                                <th class="py-1 border-r border-t border-b border-black pr-1" style="font-size: 0.6rem;">END</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td class="py-1 border-l border-r border-black pr-1" style="text-align: center;">BASIC SALARY</td>
-                                <td class="py-1 border-r border-black pr-1">
-                                    <div class="flex space-x-3 w-full"> 
-                                        <div class="w-1/3">LATE</div> 
-                                        <div class="w-1/3 text-right" id="late_count">{{ payslip.late_attendance_count }}</div> 
-                                        <div class="w-1/3 text-right" id="late_deduction">{{ payslip.late_deduction }}</div>
-                                    </div>
-                                </td>
-                                <td class="py-1 border-r border-black pr-1" rowspan='8' colspan='2' id='dateRange' style="max-width: 50px;">{{ payslip.date_range }}</td>
-                                <td class="py-1 border-r border-black pr-1"></td>
-
-                            </tr>
-                            <tr>
-                                <td class="py-1 border-l border-r border-black pr-1 text-right font-bold text-blue-900" id="basic_salary">{{ payslip.basic_salary }}</td>
-                                <td class="py-1 border-r border-black pr-1">
-                                    <div class="flex space-x-3 w-full"> 
-                                        <div class="w-1/3">ABSENT</div> 
-                                        <div class="w-1/3 text-right" id="absentAttendanceCount">{{ payslip.absent_count }}</div> 
-                                        <div class="w-1/3 text-right" id="absent_deduction">{{ payslip.absent_deduction }}</div>
-                                    </div>
-                                </td>
-                                <td class="py-1 border-r border-black pr-1 style="font-size: 0.6rem; font-weight: bold;>ADJUSTMENT</td>
-                            </tr>
-                            <tr>
-                                <td class="py-1 border-l border-r border-black pr-1"></td>
-                                <td class="py-1 border-r border-black pr-1">
-                                    <div class="flex space-x-3 w-full"> 
-                                        <div class="w-1/3">COOP</div> 
-                                        <div class="w-1/3 text-right"> 1</div> 
-                                        <div class="w-1/3 text-right">1914.38</div>
-                                    </div>
-                                </td>
-                                <td class="py-1 border-r border-black pr-1"></td>
-                            </tr>
-                            <tr>
-                                <td class="py-1 border-l border-r border-black pr-1" style="text-align: center;">20% PREMIUM</td>
-                                <td class="py-1 border-r border-black pr-1">
-                                    <div class="flex space-x-3 w-full"> 
-                                        <div class="w-1/2 font-semibold">TOTAL</div> 
-                                        <div class="w-1/2 text-right text-red-500" id="pre_deduction">{{ payslip.pre_deduction }}</div>
-                                    </div>
-                                </td>
-                                <td class="py-1 border-r border-black pr-1"></td>
-                            </tr>
-                            <tr>
-                                <td class="py-1 border-l border-r border-black pr-1 text-right" id='premium'>{{ payslip.premium}}</td>
-                                <td class="py-1 border-r border-black pr-1">
-    
-                                </td>
-                                <td class="py-1 border-r border-black pr-1"></td>
-                            </tr>
-                            <tr>
-                                <td class="py-1 border-l border-r border-black pr-1"></td>
-                                <td class="py-1 border-r border-black pr-1">
-                                    <div class="flex justify-between">
-                                        <div class="font-semibold">NET BEFORE TAX</div> 
-                                        <div class="text-right"id="net_before_tax">{{ payslip.net_before_tax}}</div>
-                                    </div>
-                                    
-                                </td>
-                                <td class="py-1 border-r border-black pr-1"></td>
-                            </tr>
-                            <tr>
-                                <td class="py-1 border-l border-r border-black pr-1 ">
-                                    <div class="flex-col justify-between">
-                                        <div class="font-semibold">Total</div> 
-                                        <div class="text-right"id="another_gross_pay">{{ payslip.gross_pay }}</div>
-                                    </div>
-                                </td>
-                                <td class="py-1 border-r border-black pr-1">
-                                    <div class="flex w-full"> 
-                                        <div class="w-1/3 font-semibold">TAX</div> 
-                                        <div class="w-1/3 flex-col text-right" >
-                                            <div class="text-right">2%</div>
-                                            <div class="text-right">3%</div>
-                                        </div>
-                                        <div class="w-1/3 flex-col text-right" >
-                                            <div class="text-right text-red-500" id='2_percent'>{{ payslip.tax_2_percent }}</div>
-                                            <div class="text-right text-red-500" id='3_percent'>{{ payslip.tax_3_percent}}</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="py-1 border-r border-black pr-1"></td>
-                            </tr>
-                            <tr>
-                                <td class="py-1 border-l border-r border-l border-black pr-1 ">
-                                    <div class="flex-col justify-between">
-                                        <div class="font-semibold">Per Day</div> 
-                                        <div class="text-right"id="dailySalary">{{ payslip.daily_salary }}</div>
-                                    </div>
-                                </td>
-                                <td class="py-1 border-r border-black pr-1"></td>
-                                <td class="py-1 border-r border-black pr-1"></td>
-                            </tr>
-                            <tr>
-                                <td class="py-1 border border-black pr-1" style="font-size: 0.6rem; font-weight: bold;">GROSS PAY</td>
-                                <td class="py-1 border border-black pr-1" style="font-size: 0.6rem; font-weight: bold;">TOTAL DEDUCTION</td>
-                                <td class="py-1 border border-black pr-1" colspan="2" style="font-size: 0.6rem; font-weight: bold;">TOTAL DAYS</td>
-                                <td class="py-1 border border-black pr-1" style="font-size: 0.6rem; font-weight: bold;">TOTAL NET PAY</td>
-                            </tr>
-                                                                               
-                            <tr>
-                                <td class="py-1 border-l border-r border-b border-black pr-1 text-right font-bold" id="gross_pay">{{ payslip.gross_pay }}</td>
-                                <td class="py-1 border-r border-b border-black pr-1 text-right  font-bold" id='total_deduction'>{{ payslip.total_deduction }}</td>
-                                <td class="py-1 border-b border-black pr-1 pr-1 text-right  font-bold"></td>
-                                <td class="py-1 border-r border-b border-black pr-1 text-right  font-bold" id="number_of_days">{{ payslip.number_of_days}}</td>
-                                <td class="py-1 border-r border-b border-black pr-1 text-right  font-bold" id="total_net_pay">{{ payslip.total_net_pay }}</td>
-                            </tr>
-                            <tr>
-                                <td class="py-1 border-l border-b border-black pr-1">-</td>
-                                <td class="py-1  border-b border-black pr-1">-</td>
-                                <td class="py-1 border-b border-black pr-1">-</td>
-                                <td class="py-1 border-b border-black pr-1"></td>
-                                <td class="py-1 border-r border-b border-black pr-1">-</td>
-                            </tr>
-                            
-                        </tbody>
-                </table>
-            </div>
-            <div class="receipt-footer text-center opacity-50">
-                <p class="text-xs font-serif">CERTIFIED CORRECT</p>
-            </div>
-            <div class="mx-auto mt-4 text-center">                
-                    <p class="text-xs font-bold">MR. DENNIS YAPBUAN</p>
-                    <p class="text-xs">Chief, Admin and Finance Division</p>
-                    <p class="text-xs">DICT Region IV-A, Calabarzon</p>
-            </div>
+        <!-- Payslip details content will be dynamically populated here -->
     </div>
-    {% endfor %}
+</div>
+
+
+{% for payslip in user_payslips %}
+<div id="payslipDetailsContent{{ payslip.id }}"  style="display: none;">
+    <div class="border border-black rounded-lg flex w-full">
+        <div class="p-1">                
+            <img src="{% static 'images/DICT Logo.png' %}" alt="Company Logo" class="w-16 h-16 mx-auto align-middle">                 
+        </div>
+        <div class="flex-col flex justify-center items-center">                
+            <div class="text-xs text-center text-blue-700">REPUBLIC OF THE PHILIPPINES</div>     
+            <div class="border-t-2 border-blue-500 text-xs text-center font-medium text-blue-700">DEPARTMENT OF INFORMATIONS AND</div>
+            <div class="text-xs text-center font-medium text-blue-700">COMMUNICATIONS TECHNLOGY</div>                 
+        </div>
+        <div class="flex-col flex-1 border-l border-black ml-3">                     
+            <div class="text-xs text-center font-medium text-gray-900 h-1/2 flex justify-center items-center">PAYSLIP </div>                 
+            <div class="text-xs font-medium text-gray-900 h-1/2 p-1 flex items-center border-t border-black">DATE: {{ payslip.current_date }}</span></div> 
+        </div>            
+    </div>
+    <div class="receipt-body">
+        <table class="w-full mt-1 border-t border-r border-l border-black" style="font-size: 0.6rem;">
+            <tr>
+                <td class="py-1 w-1/3 pl-1"><strong>OFFICE AFFILATION:</strong></td>
+                <td class="py-1 text-right pr-1">DICT REGION 4A</td>
+            </tr>
+            <tr>
+                <td class="py-1 w-1/3 pl-1 "><strong>EMPLOYEE NO:</strong></td>
+                <td class="py-1 text-right  pr-1">{{ payslip.user }}</td>
+            </tr>
+            <tr>
+                <td class="py-1 w-1/3 pl-1"><strong>EMPLOYEE NAME:</strong></td>
+                <td class="py-1 text-right pr-1">{{ payslip.user.name }}</span></td>
+            </tr>
+            <tr>
+                <td class="py-1 w-1/3 pl-1"><strong>POSITION:</strong></td>
+                <td class="py-1 text-right pr-1"><span id="position"></span></td>
+            </tr>
+            <tr>
+                <td colspan="2" class="py-1 border-t border-black pl-1"><strong>NUMBER OF DAYS IN A MONTH:</strong> 22</td>
+            </tr>
+            <table class="w-full" style="font-size: 0.6rem">
+                <thead>
+                    <tr>
+                        <th class="py-1 border border-black pr-1" rowspan='2' style="font-size: 0.6rem;">GROSS EARNING</th>
+                        <th class="py-1 border-t border-b border-black pr-1" rowspan='2' style="font-size: 0.6rem;">DEDUCTION</th>
+                        <th class="py-1 border-t border-l border-black pr-1" colspan="2" style="font-size: 0.6rem;">DATE</th>
+                        <th class="py-1 border border-black pr-1" rowspan='2' style="font-size: 0.6rem;">NET EARNINGS</th>
+                    </tr>
+                    <tr>
+                        <th class="py-1 border border-black pr-1" style="font-size: 0.6rem;">START</th>
+                        <th class="py-1 border-r border-t border-b border-black pr-1" style="font-size: 0.6rem;">END</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="py-1 border-l border-r border-black pr-1" style="text-align: center;">BASIC SALARY</td>
+                        <td class="py-1 border-r border-black pr-1">
+                            <div class="flex space-x-3 w-full"> 
+                                <div class="w-1/3">LATE</div> 
+                                <div class="w-1/3 text-right" id="late_count">{{ payslip.late_attendance_count }}</div> 
+                                <div class="w-1/3 text-right" id="late_deduction">{{ payslip.late_deduction }}</div>
+                            </div>
+                        </td>
+                        <td class="py-1 border-r border-black pr-1" rowspan='8' colspan='2' id='dateRange' style="max-width: 50px;">{{ payslip.date_range }}</td>
+                        <td class="py-1 border-r border-black pr-1"></td>
+
+                    </tr>
+                    <tr>
+                        <td class="py-1 border-l border-r border-black pr-1 text-right font-bold text-blue-900" id="basic_salary">{{ payslip.basic_salary }}</td>
+                        <td class="py-1 border-r border-black pr-1">
+                            <div class="flex space-x-3 w-full"> 
+                                <div class="w-1/3">ABSENT</div> 
+                                <div class="w-1/3 text-right" id="absentAttendanceCount">{{ payslip.absent_count }}</div> 
+                                <div class="w-1/3 text-right" id="absent_deduction">{{ payslip.absent_deduction }}</div>
+                            </div>
+                        </td>
+                        <td class="py-1 border-r border-black pr-1 style="font-size: 0.6rem; font-weight: bold;>ADJUSTMENT</td>
+                    </tr>
+                    <tr>
+                        <td class="py-1 border-l border-r border-black pr-1"></td>
+                        <td class="py-1 border-r border-black pr-1">
+                            <div class="flex space-x-3 w-full"> 
+                                <div class="w-1/3">COOP</div> 
+                                <div class="w-1/3 text-right">{{ payslip.member_status }}</div> 
+                                <div class="w-1/3 text-right">{{ payslip.cooperative_deduction }}</div>
+                            </div>
+                        </td>
+                        <td class="py-1 border-r border-black pr-1"></td>
+                    </tr>
+                    <tr>
+                        <td class="py-1 border-l border-r border-black pr-1" style="text-align: center;">20% PREMIUM</td>
+                        <td class="py-1 border-r border-black pr-1">
+                            <div class="flex space-x-3 w-full"> 
+                                <div class="w-1/2 font-semibold">TOTAL</div> 
+                                <div class="w-1/2 text-right text-red-500" id="pre_deduction">{{ payslip.pre_deduction }}</div>
+                            </div>
+                        </td>
+                        <td class="py-1 border-r border-black pr-1"></td>
+                    </tr>
+                    <tr>
+                        <td class="py-1 border-l border-r border-black pr-1 text-right" id='premium'>{{ payslip.premium}}</td>
+                        <td class="py-1 border-r border-black pr-1">
+
+                        </td>
+                        <td class="py-1 border-r border-black pr-1"></td>
+                    </tr>
+                    <tr>
+                        <td class="py-1 border-l border-r border-black pr-1"></td>
+                        <td class="py-1 border-r border-black pr-1">
+                            <div class="flex justify-between">
+                                <div class="font-semibold">NET BEFORE TAX</div> 
+                                <div class="text-right"id="net_before_tax">{{ payslip.net_before_tax}}</div>
+                            </div>
+                            
+                        </td>
+                        <td class="py-1 border-r border-black pr-1"></td>
+                    </tr>
+                    <tr>
+                        <td class="py-1 border-l border-r border-black pr-1 ">
+                            <div class="flex-col justify-between">
+                                <div class="font-semibold">Total</div> 
+                                <div class="text-right"id="another_gross_pay">{{ payslip.gross_pay }}</div>
+                            </div>
+                        </td>
+                        <td class="py-1 border-r border-black pr-1">
+                            <div class="flex w-full"> 
+                                <div class="w-1/3 font-semibold">TAX</div> 
+                                <div class="w-1/3 flex-col text-right" >
+                                    <div class="text-right">2%</div>
+                                    <div class="text-right">3%</div>
+                                </div>
+                                <div class="w-1/3 flex-col text-right" >
+                                    <div class="text-right text-red-500" id='2_percent'>{{ payslip.tax_2_percent }}</div>
+                                    <div class="text-right text-red-500" id='3_percent'>{{ payslip.tax_3_percent}}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="py-1 border-r border-black pr-1"></td>
+                    </tr>
+                    <tr>
+                        <td class="py-1 border-l border-r border-l border-black pr-1 ">
+                            <div class="flex-col justify-between">
+                                <div class="font-semibold">Per Day</div> 
+                                <div class="text-right"id="dailySalary">{{ payslip.daily_salary }}</div>
+                            </div>
+                        </td>
+                        <td class="py-1 border-r border-black pr-1"></td>
+                        <td class="py-1 border-r border-black pr-1"></td>
+                    </tr>
+                    <tr>
+                        <td class="py-1 border border-black pr-1" style="font-size: 0.6rem; font-weight: bold;">GROSS PAY</td>
+                        <td class="py-1 border border-black pr-1" style="font-size: 0.6rem; font-weight: bold;">TOTAL DEDUCTION</td>
+                        <td class="py-1 border border-black pr-1" colspan="2" style="font-size: 0.6rem; font-weight: bold;">TOTAL DAYS</td>
+                        <td class="py-1 border border-black pr-1" style="font-size: 0.6rem; font-weight: bold;">TOTAL NET PAY</td>
+                    </tr>
+                                                                       
+                    <tr>
+                        <td class="py-1 border-l border-r border-b border-black pr-1 text-right font-bold" id="gross_pay">{{ payslip.gross_pay }}</td>
+                        <td class="py-1 border-r border-b border-black pr-1 text-right  font-bold" id='total_deduction'>{{ payslip.total_deduction }}</td>
+                        <td class="py-1 border-b border-black pr-1 pr-1 text-right  font-bold"></td>
+                        <td class="py-1 border-r border-b border-black pr-1 text-right  font-bold" id="number_of_days">{{ payslip.number_of_days}}</td>
+                        <td class="py-1 border-r border-b border-black pr-1 text-right  font-bold" id="total_net_pay">{{ payslip.total_net_pay }}</td>
+                    </tr>
+                    <tr>
+                        <td class="py-1 border-l border-b border-black pr-1">-</td>
+                        <td class="py-1  border-b border-black pr-1">-</td>
+                        <td class="py-1 border-b border-black pr-1">-</td>
+                        <td class="py-1 border-b border-black pr-1"></td>
+                        <td class="py-1 border-r border-b border-black pr-1">-</td>
+                    </tr>
+                    
+                </tbody>
+        </table>
+    </div>
+    <div class="receipt-footer text-center opacity-50">
+        <p class="text-xs font-serif">CERTIFIED CORRECT</p>
+    </div>
+    <div class="mx-auto mt-4 text-center">                
+            <p class="text-xs font-bold">MR. DENNIS YAPBUAN</p>
+            <p class="text-xs">Chief, Admin and Finance Division</p>
+            <p class="text-xs">DICT Region IV-A, Calabarzon</p>
+    </div>
+
     <div class="flex justify-end space-x-2" > 
         <button type="button" class="bg-green-400 hover:bg-green-500 text-white font-bold py-2 px-4 rounded mt-2" onclick="downloadPdf()">Download PDF</button>
         <button onclick="goBackToMainModal()" class="bg-transparent hover:bg-blue-500 text-blue-500 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded mt-2">Back</button>
         <button onclick="closePayslipDetailsModal()" class="bg-transparent hover:bg-blue-500 text-blue-500 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded mt-2">Close</button>
     </div>
+</div>
+{% endfor %}
+<div id="attendanceModal" class="modal">
+    <div class="modal-content flex max-w-150xl mx-auto p-4 h-96 overflow-y-auto">
+        <div class="w-1/2 pr-2">
+            <div class="text-left text-xs italic">Civil Service Form No. 48</div>
+            <div class="text-center font-bold text-lg">DAILY TIME RECORD</div>
+            <div class="text-center font-semibold text-base">{{ user_name }}</div>
+            <div class="text-center text-xs text-gray-500"><hr style="border-top: 2px dashed black; width: 100%;"></div>
+            <div class="text-center text-xs text-black-500 mb-2 font-bold italic">(Name)</div>        
+            <div class="text-left text-xs text-black-500 mb-2 italic">For the period of ________________,_______________</div>
+            <div class="text-center text-xs text-gray-500 mb-2">
+                <table class="mx-auto border-collapse ml-0">
+                    <tr>
+                        <td class="text-left text-xs italic">Official hours of arrival</td>
+                        <td class="text-right text-xs pl-20 italic">Regular Days_________________</td>
+                    </tr>
+                    <tr>
+                        <td class="text-left text-xs italic"> and departure</td>
+                        <td class="text-right text-xs pr-6 italic">Saturdays________________</td>
+                    </tr>
+                </table>
+            </div>
+            {% if all_attendances %}
+                <div class="overflow-x-auto">
+                    <table class="max-w-full w-full table-fixed text-xs" style="font-size: 0.6rem; border: 3px solid black;">
+                        <thead>
+                            <tr>
+                                <th class="w-1/12 border border-black pl-0.5">Days</th>
+                                <th colspan="2" class="w-1/6 border border-black">A.M</th>
+                                <th colspan="2" class="w-1/6 border border-black">P.M</th>
+                                <th colspan="2" class="w-1/6 border border-black">Under Time</th>
+                            </tr>
+                            <tr>
+                                <th class="border border-black"> </th>
+                                <th class="border border-black">Arrival</th>
+                                <th class="border border-black">Departure</th>
+                                <th class="border border-black">Arrival</th>
+                                <th class="border border-black">Departure</th>
+                                <th class="border border-black">Hours</th>
+                                <th class="border border-black">Minutes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for attendance in all_attendances %}
+                                <tr>
+                                    <td class="border border-black px-2">{{ attendance.date.day}}</td>
+                                    <td class="border border-black px-4 py-2">{{ attendance.time_in }}</td>
+                                    <td class="border border-black px-5 py-2">{{ attendance.time_out }}</td>
+                                    <td class="border border-black px-4 py-2">{{ attendance.time_in }}</td>
+                                    <td class="border border-black px-4 py-2">{{ attendance.time_out }}</td>
+                                    <td class="border border-black px-4 py-2">{{ attendance.undertime_hours }}</td>
+                                    <td class="border border-black px-4 py-2">{{ attendance.undertime_minutes }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="text-center mt-2">
+                    <svg class="h-8 w-8 text-red-600 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                    <h3 class="text-base font-medium text-gray-900 mt-1">No Attendance Records</h3>
+                    <p class="text-sm text-gray-500 mt-1">No attendance records found for this {{ user_name }}.</p>
+                </div>
+            {% endif %}
+            <!-- Footer -->
+            <div class="mt-2">
+                <div class="text-xs text-gray-500 italic">I CERTIFY on my honor that the above is a true and correct report of the hours of work performed, record of which was made daily at the time of arrival and departure from office.</div>
+                <br>
+                <div class="text-xs text-black mt-2 text-center">
+                    <strong class="font-bold">{{ user_name }}</strong>
+                    <hr class="border-t-2 border-black w-80 mx-auto">
+                    <br><br>
+                    <strong>MARIA GRACIELA R. BUCAD</strong><br>
+                    <strong>Head, Technical Operations Division</strong><br>
+                    <br>
+                    <hr class="border-t-2 border-black w-80 mx-auto">
+                    <br>
+                    <em class="font-bold italic">In-Charge</em><br>
+                    (See Instructions on back)
+                </div>
+            </div>
+        </div>
+        <!-- Second Column -->
+        <div class="w-1/2 pl-4">
+            <div class="text-left text-xs italic">Civil Service Form No. 48</div>
+            <div class="text-center font-bold text-lg">DAILY TIME RECORD</div>
+            <div class="text-center font-semibold text-base">{{ user_name }}</div>
+            <div class="text-center text-xs text-gray-500"><hr style="border-top: 2px dashed black; width: 100%;"></div>
+            <div class="text-center text-xs text-black-500 mb-2 font-bold italic">(Name)</div>        
+            <div class="text-left text-xs text-black-500 mb-2 italic">For the period of ________________,_______________</div>
+            <div class="text-center text-xs text-gray-500 mb-2">
+                <table class="mx-auto border-collapse ml-0">
+                    <tr>
+                        <td class="text-left text-xs italic">Official hours of arrival</td>
+                        <td class="text-right text-xs pl-20 italic">Regular Days_______________</td>
+                    </tr>
+                    <tr>
+                        <td class="text-left text-xs italic"> and departure</td>
+                        <td class="text-right text-xs pr-6 italic">Saturdays________________</td>
+                    </tr>
+                </table>
+            </div>
+            {% if all_attendances %}
+                <div class="overflow-x-auto">
+                    <table class="max-w-full w-full table-fixed text-xs" style="font-size: 0.6rem; border: 3px solid black;">
+                        <thead>
+                            <tr>
+                                <th class="w-1/12 border border-black pl-0.5">Days</th>
+                                <th colspan="2" class="w-1/6 border border-black">A.M</th>
+                                <th colspan="2" class="w-1/6 border border-black">P.M</th>
+                                <th colspan="2" class="w-1/6 border border-black">Under Time</th>
+                            </tr>
+                            <tr>
+                                <th class="border border-black"> </th>
+                                <th class="border border-black">Arrival</th>
+                                <th class="border border-black">Departure</th>
+                                <th class="border border-black">Arrival</th>
+                                <th class="border border-black">Departure</th>
+                                <th class="border border-black">Hours</th>
+                                <th class="border border-black">Minutes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for attendance in all_attendances %}
+                                <tr>
+                                    <td class="border border-black px-2">{{ attendance.date.day}}</td>
+                                    <td class="border border-black px-4 py-2">{{ attendance.time_in }}</td>
+                                    <td class="border border-black px-5 py-2">{{ attendance.time_out }}</td>
+                                    <td class="border border-black px-4 py-2">{{ attendance.time_in }}</td>
+                                    <td class="border border-black px-4 py-2">{{ attendance.time_out }}</td>
+                                    <td class="border border-black px-4 py-2">{{ attendance.undertime_hours }}</td>
+                                    <td class="border border-black px-4 py-2">{{ attendance.undertime_minutes }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="text-center mt-2">
+                    <svg class="h-8 w-8 text-red-600 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                    <h3 class="text-base font-medium text-gray-900 mt-1">No Attendance Records</h3>
+                    <p class="text-sm text-gray-500 mt-1">No attendance records found for this {{ user_name }}.</p>
+                </div>
+            {% endif %}
+            <!-- Footer -->
+            <div class="mt-2">
+                <div class="text-xs text-gray-500 italic">I CERTIFY on my honor that the above is a true and correct report of the hours of work performed, record of which was made daily at the time of arrival and departure from office.</div>
+                <br>
+                <div class="text-xs text-black mt-2 text-center">
+                    <strong class="font-bold">{{ user_name }}</strong>
+                    <hr class="border-t-2 border-black w-80 mx-auto">
+                    <br><br>
+                    <strong>MARIA GRACIELA R. BUCAD</strong><br>
+                    <strong>Head, Technical Operations Division</strong><br>
+                    <br>
+                    <hr class="border-t-2 border-black w-80 mx-auto">
+                    <br>
+                    <em class="font-bold italic">In-Charge</em><br>
+                    (See Instructions on back)
+                </div>
+            </div>
+    <div class="mt-4 flex justify-end">
+        <button onclick="closeAttendanceModal()" class="py-2 px-6 mb-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:bg-blue-700">OK</button>
     </div>
 </div>
-
 
 
 

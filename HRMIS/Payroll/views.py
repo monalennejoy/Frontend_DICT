@@ -17,6 +17,7 @@ from datetime import datetime
 import math 
 from django.db.models import Sum
 from django.db.models import Q
+import calendar
 import base64
 
 def dashboard_views(request, user_role):
@@ -56,14 +57,30 @@ def dashboard_views(request, user_role):
 
     return render(request, 'HR/dashboard.html', context)
 
-
 def manage_payroll(request, user_role):
     latest_generated_dates = Attendance.objects.values('employee').annotate(latest_date=Max('generated_date'))
     users_with_attendance = User.objects.filter(attendance__generated_date__in=latest_generated_dates.values('latest_date')).distinct().order_by('name')
     cleansed_data_list = CleansedData.objects.all()
 
-    return render(request, 'HR/manage_payroll.html', {'user_role': user_role, 'cleansed_data_list': cleansed_data_list, 'users_with_attendance': users_with_attendance})
+    last_attendance = Attendance.objects.order_by('-generated_date').first()
+    if last_attendance:
+        month = last_attendance.date.month
+        # Get the payslips with a date range that matches the month
+        relevant_payslips = Payslip.objects.filter(
+            Q(date_range__icontains=f"{calendar.month_name[month][:3]}") &  # Match the month abbreviation
+            Q(date_range__icontains=f"{month:02d}")  # Ensure leading zero for single-digit months
+        )
+        
+        if relevant_payslips.exists():
+            # Create a set of usernames for users with relevant payslips
+            users_with_payslip = set(relevant_payslips.values_list('user__username', flat=True))
+        else:
+            users_with_payslip = set()  # Empty set if no relevant payslips found
+    else:
+        users_with_payslip = set()  # Empty set if no attendance data
 
+    print(users_with_payslip)
+    return render(request, 'HR/manage_payroll.html', {'user_role': user_role, 'cleansed_data_list': cleansed_data_list, 'users_with_attendance': users_with_attendance, 'users_with_payslip': users_with_payslip})
 
 
 def manage_employee(request, user_role):
@@ -146,6 +163,7 @@ def edit_user(request, user_pk_id):
                 'name': user.name,
                 'role': user.role,
                 'salary_grade': user.salary_grade,
+                'cooperative_member': user.cooperative_member,
             }
             return JsonResponse(user_data)
         else:
@@ -256,7 +274,7 @@ def upload_and_cleanse(request):
 
         # Generate the output Excel file name based on the formatted date range
         date_range = f"{formatted_start_date}-{formatted_end_date}"
-        output_excel = f'{date_range}.xlsx'
+        output_excel = f'attendance_{date_range}.xlsx'
 
         # Merge user details and attendance details by row index
         merged_df = pd.concat([users_df, attendance_df], axis=1)
@@ -325,11 +343,13 @@ class SaveAttendanceView(View):
 
     def calculate_remark(self, time_in, time_out, date):
         minutes_late = 0 
+        undertime_hours = 0
+        undertime_minutes = 0
         if pd.isna(time_in) or pd.isna(time_out):
             # Treat as half day if either time entry is NaN
-            return 'HALF', 0
+            return 'HALF', 0 , 0 , 0 
         elif not time_in or not time_out:
-            return 'ABSENT', 0
+            return 'ABSENT', 0, 0, 0
         else:
             # Convert time_in and time_out to datetime.time objects with format %H:%M
             time_in = datetime.strptime(str(time_in), "%H:%M").time()
@@ -343,24 +363,28 @@ class SaveAttendanceView(View):
                 if date.weekday() == 0:  # Monday
                     if time_in > datetime.strptime("08:00", "%H:%M").time():
                         minutes_late = (time_in.hour - 8) * 60 + time_in.minute
-                        return 'LATE', minutes_late
+                        return 'LATE', minutes_late,0 ,0 
                 elif 1 <= date.weekday() <= 4:  # Tuesday to Friday
                     if time_in > datetime.strptime("09:00", "%H:%M").time():
                         minutes_late = (time_in.hour - 9) * 60 + time_in.minute
-                        return 'LATE', minutes_late
-                return 'FULL', 0
+                        return 'LATE', minutes_late,0 ,0
+                return 'FULL', 0, 0, 0
             elif 4 <= hours_worked < 8:
                 if date.weekday() == 0:  # Monday
+                    undertime_hours = 8 - hours_worked
+                    undertime_minutes = 60 - (abs((datetime.combine(date, time_out) - datetime.combine(date, time_in)).seconds) % 3600) // 60
                     if time_in > datetime.strptime("12:00", "%H:%M").time():
                         minutes_late = (time_in.hour - 12) * 60 + time_in.minute
-                        return 'LATE', minutes_late
+                        return 'LATE', minutes_late, undertime_hours, undertime_minutes
                 elif 1 <= date.weekday() <= 4:  # Tuesday to Friday
+                    undertime_hours = 8 - hours_worked
+                    undertime_minutes = 60 - (abs((datetime.combine(date, time_out) - datetime.combine(date, time_in)).seconds) % 3600) // 60
                     if time_in > datetime.strptime("12:00", "%H:%M").time():
                         minutes_late = (time_in.hour - 12) * 60 + time_in.minute
-                        return 'LATE', minutes_late
-                return 'HALF', 0
+                        return 'LATE', minutes_late, undertime_hours, undertime_minutes
+                return 'HALF', 0, undertime_hours, undertime_minutes
             else:
-                return 'ABSENT', 0
+                return 'ABSENT', 0 , 0 , 0
 
 
 
@@ -423,7 +447,7 @@ class SaveAttendanceView(View):
                         print(f"Processing row {index + 2} (Employee ID {employee_id}), Date: {date}, Time In: {time_in}, Time Out: {time_out}")
 
                         # Calculate the remark based on time_in, time_out, and date
-                        remark, minutes_late = self.calculate_remark(time_in, time_out, date)
+                        remark, minutes_late, undertime_hours, undertime_minutes = self.calculate_remark(time_in, time_out, date)
 
                         # Check if an attendance record already exists for the user and date
                         existing_attendance = Attendance.objects.filter(employee=user, date=date).first()
@@ -439,7 +463,9 @@ class SaveAttendanceView(View):
                                 time_out=time_out if time_out else None,
                                 excel_file=cleansed_data,
                                 remark=remark,
-                                minutes_late=minutes_late
+                                minutes_late=minutes_late,
+                                undertime_hours=undertime_hours,
+                                undertime_minutes=undertime_minutes
                             )
 
             return JsonResponse({'success': True, 'message': 'Attendance saved successfully'})
@@ -477,9 +503,18 @@ def calculate_salary(request, username):
             late_attendance_count = all_attendances.filter(remark='LATE').count()
 
             full_day_salary = daily_salary * full_attendance_count
+            absent_day_salary = daily_salary * absent_attendance_count
             half_day_salary = (daily_salary * half_attendance_count) / 2
-            monthly_salary = full_day_salary + half_day_salary
+            monthly_salary = full_day_salary + half_day_salary + absent_day_salary
+            
+            cooperative_deduction = 0
+            member_status = 0
 
+            if user.cooperative_member:
+                coopertive_member_status = 1
+                member_status = coopertive_member_status
+                cooperative_fee_per_month = 50 
+                cooperative_deduction = cooperative_fee_per_month
             # Calculate late deduction
             total_late_minutes = all_attendances.aggregate(Sum('minutes_late'))['minutes_late__sum']
             late_deduction = round((daily_salary / 22) / 480 * total_late_minutes, 2)
@@ -496,7 +531,7 @@ def calculate_salary(request, username):
             premium =round( (0.2 * basic_salary ) , 4) 
 
             # Calculate gross pay
-            gross_pay = basic_salary + premium
+            gross_pay = round(basic_salary + premium, 4)
 
             # Calculate net before tax
             net_before_tax = gross_pay - (late_deduction + absent_deduction)
@@ -506,7 +541,7 @@ def calculate_salary(request, username):
             tax_3_percent =round(( 0.03 * net_before_tax),2)
 
             # Calculate total deduction
-            total_deduction = round( late_deduction + absent_deduction + tax_2_percent + tax_3_percent,4)
+            total_deduction = round( late_deduction + absent_deduction + tax_2_percent + tax_3_percent + cooperative_deduction,4)
 
             # Calculate total net pay
             total_net_pay =round( gross_pay - total_deduction, 4)
@@ -523,6 +558,8 @@ def calculate_salary(request, username):
                 'total_late_minutes': total_late_minutes,
                 'late_attendance_count':late_attendance_count,
                 'late_deduction': late_deduction,
+                'cooperative_deduction':cooperative_deduction,
+                'member_status':member_status,
                 'absent_count': absent_attendance_count,
                 'absent_deduction': absent_deduction,
                 'pre_deduction': pre_deduction,
@@ -568,6 +605,8 @@ def activate_payslip(request, username):
             date_range = salary_data.get('date_range')
             total_net_pay = salary_data.get('total_net_pay')
             current_date = salary_data.get('current_date')
+            cooperative_deduction = salary_data.get('cooperative_deduction') 
+            member_status = salary_data.get('member_status')  
 
             # Get the user object
             user = get_object_or_404(User, username=username)
@@ -593,7 +632,9 @@ def activate_payslip(request, username):
                 date_range=date_range,
                 total_net_pay=total_net_pay,
                 current_date=current_date,
-                activated=True
+                activated=True,
+                cooperative_deduction=cooperative_deduction, 
+                member_status=member_status 
             )
 
             return JsonResponse({'success': 'Payslip activated successfully'})
@@ -751,47 +792,52 @@ def update_attendance(request):
     return JsonResponse({'success': False, 'error': 'Invalid request method'})
 
 from django.utils import timezone
-
 def add_attendance(request, username):
-    try:
-        # Get the user
-        user = User.objects.get(username=username)
+    if request.method == "POST":
+        try:
+            # Get the data from the AJAX request body
+            data = json.loads(request.body)
+            formData = data['formData']
 
-        # Get the last generated date for the user
-        last_generated_date = Attendance.objects.filter(employee=user).latest('generated_date').generated_date
+            # Get the user
+            user = User.objects.get(username=username)
 
-        # Extract form data
-        date = request.POST.get('date')
-        time_in = request.POST.get('time_in')
-        time_out = request.POST.get('time_out')
-        minutes_late = request.POST.get('minutes_late')
-        existing_file_id = request.POST.get('existing_file')
-        remark = request.POST.get('remark')
+            # Get the last generated date for the user
+            last_generated_date = Attendance.objects.filter(employee=user).latest('generated_date').generated_date
 
-        # Get the existing file
-        existing_file = CleansedData.objects.get(id=existing_file_id)
+            # Extract form data
+            date = formData.get('date')
+            time_in = formData.get('time_in')
+            time_out = formData.get('time_out')
+            minutes_late = formData.get('minutes_late')
+            existing_file_id = formData.get('existing_file')
+            remark = formData.get('remark')
 
-        # Create a new attendance record with all the fields
-        new_attendance = Attendance(
-            employee=user,
-            date=date,
-            generated_date=last_generated_date,
-            time_in=time_in,
-            time_out=time_out,
-            minutes_late=minutes_late,
-            excel_file=existing_file,
-            remark=remark,
-            # Add other fields as needed
-        )
-        new_attendance.save()
+            # Get the existing file
+            existing_file = CleansedData.objects.get(id=existing_file_id)
 
-        return JsonResponse({'success': True, 'message': 'Attendance saved successfully'})
+            # Create a new attendance record with all the fields
+            new_attendance = Attendance(
+                employee=user,
+                date=date,
+                generated_date=last_generated_date,
+                time_in=time_in,
+                time_out=time_out,
+                minutes_late=minutes_late,
+                excel_file=existing_file,
+                remark=remark,
+                # Add other fields as needed
+            )
+            new_attendance.save()
 
-    except User.DoesNotExist:
-        return JsonResponse({'success': False, 'message': 'User not found'}, status=404)
-    except CleansedData.DoesNotExist:
-        return JsonResponse({'success': False, 'message': 'Selected file not found'}, status=404)
-    except Exception as e:
-        return JsonResponse({'success': False, 'message': str(e)}, status=500)
+            return JsonResponse({'success': True, 'message': 'Attendance saved successfully'})
 
+        except User.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'User not found'}, status=404)
+        except CleansedData.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'Selected file not found'}, status=404)
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': str(e)}, status=500)
 
+    else:
+        return JsonResponse({'success': False, 'message': 'Invalid request method or not an AJAX request'}, status=400)

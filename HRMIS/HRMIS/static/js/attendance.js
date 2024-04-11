@@ -105,12 +105,21 @@ function closeeditSuccessModal() {
 function openAddAttendanceModal() {
     document.getElementById('addAttendanceModal').style.display = 'block';
 }
+
+function closeAttendanceEditModal() {
+    var modal = document.getElementById("AttendanceEditModal");
+    modal.style.display = "none";
+}
+
+// Function to open the modal
+function openAddAttendanceModal() {
+    document.getElementById('addAttendanceModal').style.display = 'block';
+}
   
 // Function to close the modal
 function closeAddAttendanceModal() {
     document.getElementById('addAttendanceModal').style.display = 'none';
 }
-
 
 function calculateMinutesLate() {
     const timeInInput = document.getElementById('time_in');
@@ -122,6 +131,56 @@ function calculateMinutesLate() {
     const minutesLate = Math.max(0, Math.floor(timeDifference / (1000 * 60)));
 
     document.getElementById('minutes_late').value = minutesLate;
+}
+
+function saveAttendance() {
+    // Collect form data
+    var formData = {
+        username: document.querySelector('input[name="username"]').value,
+        date: document.querySelector('input[name="date"]').value,
+        time_in: document.querySelector('input[name="time_in"]').value,
+        time_out: document.querySelector('input[name="time_out"]').value,
+        minutes_late: document.querySelector('input[name="minutes_late"]').value,
+        existing_file: document.querySelector('select[name="existing_file"]').value,
+        remark: document.querySelector('select[name="remark"]').value
+    };
+
+    // Construct the URL for the AJAX request
+    var url = "/hr_views/add_attendance/" + formData.username + "/";
+
+    // Send AJAX request to save attendance
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", url, true);
+    xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            // Handle success response
+            console.log("Attendance saved successfully.");
+            // Open the success modal
+            closeAddAttendanceModal();
+            openSuccessModal();
+        } else {
+            // Handle error response
+            console.error("Failed to save attendance.");
+        }
+    };
+    xhr.onerror = function() {
+        // Handle network errors
+        console.error("Network error occurred.");
+    };
+    xhr.send(JSON.stringify({formData: formData}));
+}
+
+function openSuccessModal() {
+    var modal = document.getElementById("AddSuccessModal");
+    modal.classList.remove("hidden");
+}
+
+function closeAddSuccessModal() {
+    var modal = document.getElementById("AddSuccessModal");
+    modal.classList.add("hidden");
+    location.reload(); // Refresh the page
 }
 
 // Define variables for pagination
@@ -177,17 +236,3 @@ function nextPage() {
 
 // Initial pagination setup
 showRows();
-
-function showAddSuccessModal() {
-    // Close the attendance modal
-    closeAddAttendanceModal();
-
-    // Show the success modal
-    var successModal = document.getElementById('addSuccessModal');
-    successModal.classList.remove('hidden');
-}
-
-function closeAddSuccessModal() {
-    var successModal = document.getElementById('addSuccessModal');
-    successModal.classList.add('hidden');
-}

@@ -9,7 +9,6 @@
             <button type="button" class="bg-green-300 hover:bg-green-600 text-white font-semibold hover:text-white py-2 px-4 rounded mr-2"  onclick="openAddAttendanceModal()">Add Attendance</button>
         </div>
 
-
         <div class="flex justify-end m-1">
             <div class="pagination">
                 <div class="flex">
@@ -58,7 +57,6 @@
                                 ">
                                 {{ attendance.remark }}
                             </td>
-                       
                             <td class="text-center align-middle pt-2">
                                 <button class="bg-custom-button1 text-white text-xs p-2 rounded-md" onclick="openAttendanceEditModal('{{ attendance.id }}')">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" class="text-lg" viewBox="0 0 24 24">
@@ -75,6 +73,7 @@
             <p>No attendance data available.</p>
         {% endif %}
     </div>
+
     <div class="flex-col w-1/4 mx-1" style="width: 300px; height: 900px;">
         <div class="h-1/3 bg-gradient-to-t from-blue-100 to-white shadow-custom rounded-xl text-center flex flex-col items-center justify-center">
             <div class="h-40 w-40 overflow-hidden rounded-full border-8 border-white bg-white">
@@ -228,24 +227,28 @@
         </div>
     </div>
 </div>
-   
-   
+    
 <!-- Add Attendance Modal -->
 <div id="addAttendanceModal" class="modal">
     <div class="modal-content bg-white p-4 rounded-md">
         <h1 class="text-2xl font-bold mb-4">Add Attendance</h1>
-        <form method="post" action="{% url 'add_attendance' username=username %}" class="space-y-4">
+
+        <div class="space-y-4">
             {% csrf_token %}
+
             <input name="username" value="{{ username }}" type="hidden">
-                <div class="w-full">
-                    <label for="date" class="block">Date:</label>
-                    <input type="date" name="date" required class="w-full p-2 border rounded-md">
-                </div>
+
+            <div class="w-full">
+                <label for="date" class="block">Date:</label>
+                <input type="date" name="date" required class="w-full p-2 border rounded-md">
+            </div>
+
             <div class="flex space-x-3">
                 <div class="w-full md:w-1/2">
                     <label for="time_out" class="block">Time Out:</label>
                     <input type="time" name="time_out" required class="w-full p-2 border rounded-md">
                 </div>
+
                 <div class="w-full md:w-1/2">
                     <label for="time_in" class="block">Time In:</label>
                     <input type="time" name="time_in" id="time_in" required oninput="calculateMinutesLate()" class="w-full p-2 border rounded-md">
@@ -255,12 +258,14 @@
                 <label for="minutes_late" class="block">Minutes Late:</label>
                 <input type="number" name="minutes_late" id="minutes_late" required readonly class="w-full p-2 border rounded-md">
             </div>
+
             <label for="existing_file" class="block">Choose Existing File:</label>
             <select name="existing_file" id="existing_file" class="w-full p-2 border rounded-md">
                 {% for file in existing_files %}
                     <option value="{{ file.id }}">{{ file.file_name }}</option>
                 {% endfor %}
             </select>
+
             <label for="remark" class="block">Remark:</label>
             <select name="remark" required class="w-full p-2 border rounded-md">
                 <option value="FULL">Full Day</option>
@@ -271,15 +276,15 @@
                 <option value="LEAVE">Leave</option>
             </select>
             <div class="flex justify-end">
-            <button type="button" class="bg-transparent hover:bg-blue-500 text-blue-500 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded" onclick="closeAddAttendanceModal()">Close</button>
-            <button type="button" id="saveAttendanceButton" class="bg-green-500 text-white px-4 py-2 rounded-md ml-2">Save Attendance</button>
+                <button type="button" class="bg-transparent hover:bg-blue-500 text-blue-500 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded" onclick="closeAddAttendanceModal()">Close</button>
+                <button type="button" class="bg-green-500 text-white px-4 py-2 rounded-md ml-2" onclick="saveAttendance()">Save Attendance</button>
+            </div>
         </div>
-        </form>
     </div>
 </div>
 
-<!-- Add Attendance Success Modal -->
-<div class="fixed inset-0 flex items-center justify-center hidden bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50" id="addSuccessModal">
+
+<div class="fixed inset-0 flex items-center justify-center hidden bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full" id="AddSuccessModal">
     <div class="relative p-5 border w-96 shadow-lg rounded-md bg-white">
         <div class="mt-3 text-center">
             <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100">
@@ -289,10 +294,12 @@
             </div>
             <h3 class="text-lg leading-6 font-medium text-gray-900">Successful</h3>
             <div class="mt-2 px-7 py-3">
-                <p class="text-sm text-gray-500">The attendance has been added successfully.</p>
+                <p class="text-sm text-gray-500">The changes have been saved successfully.</p>
             </div>
             <div class="items-center px-4 py-3">
-                <button id="addOkBtn" class="px-4 py-2 bg-blue-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                <button id="ok-btn" class="px-4 py-2 bg-blue-500 text-white
+                                text-base font-medium rounded-md w-full
+                                shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
                         onclick="closeAddSuccessModal()">
                     OK
                 </button>
