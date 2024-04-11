@@ -87,8 +87,6 @@ function openPayslipDetailsModal(payslipId) {
     }
 }
 
-
-
 function goBackToMainModal() {
     document.getElementById('payslipDetailsModal').style.display = 'none';
     document.getElementById('payrollModal').style.display = 'block';
@@ -108,6 +106,38 @@ function openAttendanceModal() {
     modal.style.remove = 'hidden';
 }
 
+function adjustModalSize() {
+    var modal = document.getElementById('attendanceModal');
+    var modalContent = modal.querySelector('.modal-content');
+    var windowHeight = window.innerHeight;
+    var windowWidth = window.innerWidth;
+    var maxModalHeight = windowHeight * 0.99; // Adjust this value as needed
+    var maxModalWidth = windowWidth * 0.99; // Adjust this value as needed
+    var contentHeight = modalContent.offsetHeight;
+    var contentWidth = modalContent.offsetWidth;
+    var padding = 20; // Adjust this value as needed
+
+    // Set maximum height and width for the modal content
+    modalContent.style.maxHeight = (maxModalHeight - padding) + 'px';
+    modalContent.style.maxWidth = (maxModalWidth - padding) + 'px';
+
+    // Check if the content height exceeds the window height
+    if (contentHeight + padding > windowHeight) {
+        // If content height exceeds window height, set modal height to fit content
+        modalContent.style.height = (windowHeight - padding) + 'px';
+    }
+
+    // Check if the content width exceeds the window width
+    if (contentWidth + padding > windowWidth) {
+        // If content width exceeds window width, set modal width to fit content
+        modalContent.style.width = (windowWidth - padding) + 'px';
+    }
+}
+
+// Call the function initially and on window resize
+window.onload = adjustModalSize;
+window.onresize = adjustModalSize;
+
 function closeAttendanceModal() {
     // Get the modal element
     var modal = document.getElementById("attendanceModal");
@@ -116,4 +146,26 @@ function closeAttendanceModal() {
     modal.style.display = 'none';
 }
 
+function downloadPdf() {
+    // Show the attendance modal
+    $('#attendanceModal').show();
 
+    // Wait for the modal to be fully shown
+    setTimeout(function() {
+        // Capture the PDF content
+        const element = document.getElementById('attendanceModal');
+
+        // Use html2pdf to generate the PDF
+        html2pdf(element, {
+            margin: 5,
+            filename: 'Daily Time Record.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'mm', format: [162, 125], orientation: 'portrait' },
+            onAfterPdf: function (pdf) {
+                // Hide the attendance modal after PDF generation
+                $('#attendanceModal').hide();
+            }
+        });
+    }, 500); // Adjust the delay if necessary
+}

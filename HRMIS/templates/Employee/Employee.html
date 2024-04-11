@@ -347,7 +347,7 @@
 </div>
 {% endfor %}
 <div id="attendanceModal" class="modal">
-    <div class="modal-content flex max-w-150xl mx-auto p-4 h-96 overflow-y-auto">
+    <div class="modal-content flex max-w-150xl mx-auto p-4 h-full overflow-y-auto">
         <div class="w-1/2 pr-2">
             <div class="text-left text-xs italic">Civil Service Form No. 48</div>
             <div class="text-center font-bold text-lg">DAILY TIME RECORD</div>
@@ -368,39 +368,38 @@
                 </table>
             </div>
             {% if all_attendances %}
-                <div class="overflow-x-auto">
-                    <table class="max-w-full w-full table-fixed text-xs" style="font-size: 0.6rem; border: 3px solid black;">
-                        <thead>
+            <div class="overflow-x-auto">
+                <table class="max-w-full w-full table-fixed text-xs" style="font-size: 0.6rem; border: 3px solid black;">
+                    <thead>
+                        <tr>
+                            <th class="w-1/12 border border-black border-r-2 text-center" rowspan="2">Days</th>
+                            <th colspan="2" class="w-1/6 border border-black text-center">A.M</th>
+                            <th colspan="2" class="w-1/6 border border-black text-center">P.M</th>
+                            <th colspan="2" class="w-1/6 border border-black text-center">Under Time</th>
+                        </tr>
+                        <tr>
+                            <th class="border border-black text-center">Arrival</th>
+                            <th class="border border-black text-center">Departure</th>
+                            <th class="border border-black text-center">Arrival</th>
+                            <th class="border border-black text-center">Departure</th>
+                            <th class="border border-black text-center">Hours</th>
+                            <th class="border border-black text-center">Minutes</th>
+                        </tr>
+                    </thead>                       
+                    <tbody>
+                        {% for attendance in all_attendances %}
                             <tr>
-                                <th class="w-1/12 border border-black pl-0.5">Days</th>
-                                <th colspan="2" class="w-1/6 border border-black">A.M</th>
-                                <th colspan="2" class="w-1/6 border border-black">P.M</th>
-                                <th colspan="2" class="w-1/6 border border-black">Under Time</th>
+                                <td class="border border-black px-3 border-r-2 text-right">{{ attendance.date.day}}</td>
+                                <td class="border border-black px-4 py-2">{{ attendance.time_in }}</td>
+                                <td class="border border-black px-5 py-2">{{ attendance.time_out }}</td>
+                                <td class="border border-black px-4 py-2">{{ attendance.time_in }}</td>
+                                <td class="border border-black px-4 py-2">{{ attendance.time_out }}</td>
+                                <td class="border border-black px-4 py-2">{{ attendance.undertime_hours }}</td>
+                                <td class="border border-black px-4 py-2">{{ attendance.undertime_minutes }}</td>
                             </tr>
-                            <tr>
-                                <th class="border border-black"> </th>
-                                <th class="border border-black">Arrival</th>
-                                <th class="border border-black">Departure</th>
-                                <th class="border border-black">Arrival</th>
-                                <th class="border border-black">Departure</th>
-                                <th class="border border-black">Hours</th>
-                                <th class="border border-black">Minutes</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for attendance in all_attendances %}
-                                <tr>
-                                    <td class="border border-black px-2">{{ attendance.date.day}}</td>
-                                    <td class="border border-black px-4 py-2">{{ attendance.time_in }}</td>
-                                    <td class="border border-black px-5 py-2">{{ attendance.time_out }}</td>
-                                    <td class="border border-black px-4 py-2">{{ attendance.time_in }}</td>
-                                    <td class="border border-black px-4 py-2">{{ attendance.time_out }}</td>
-                                    <td class="border border-black px-4 py-2">{{ attendance.undertime_hours }}</td>
-                                    <td class="border border-black px-4 py-2">{{ attendance.undertime_minutes }}</td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                        {% endfor %}
+                    </tbody>
+                </table>
                 </div>
             {% else %}
                 <div class="text-center mt-2">
@@ -445,7 +444,7 @@
                     </tr>
                     <tr>
                         <td class="text-left text-xs italic"> and departure</td>
-                        <td class="text-right text-xs pr-6 italic">Saturdays________________</td>
+                        <td class="text-right text-xs pr-4 italic">Saturdays________________</td>
                     </tr>
                 </table>
             </div>
@@ -454,13 +453,12 @@
                     <table class="max-w-full w-full table-fixed text-xs" style="font-size: 0.6rem; border: 3px solid black;">
                         <thead>
                             <tr>
-                                <th class="w-1/12 border border-black pl-0.5">Days</th>
+                                <th class="w-1/12 border border-black border-r-2" rowspan="2">Days</th>
                                 <th colspan="2" class="w-1/6 border border-black">A.M</th>
                                 <th colspan="2" class="w-1/6 border border-black">P.M</th>
                                 <th colspan="2" class="w-1/6 border border-black">Under Time</th>
                             </tr>
                             <tr>
-                                <th class="border border-black"> </th>
                                 <th class="border border-black">Arrival</th>
                                 <th class="border border-black">Departure</th>
                                 <th class="border border-black">Arrival</th>
@@ -468,17 +466,17 @@
                                 <th class="border border-black">Hours</th>
                                 <th class="border border-black">Minutes</th>
                             </tr>
-                        </thead>
+                        </thead>                        
                         <tbody>
                             {% for attendance in all_attendances %}
                                 <tr>
-                                    <td class="border border-black px-2">{{ attendance.date.day}}</td>
-                                    <td class="border border-black px-4 py-2">{{ attendance.time_in }}</td>
-                                    <td class="border border-black px-5 py-2">{{ attendance.time_out }}</td>
-                                    <td class="border border-black px-4 py-2">{{ attendance.time_in }}</td>
-                                    <td class="border border-black px-4 py-2">{{ attendance.time_out }}</td>
-                                    <td class="border border-black px-4 py-2">{{ attendance.undertime_hours }}</td>
-                                    <td class="border border-black px-4 py-2">{{ attendance.undertime_minutes }}</td>
+                                    <td class="border border-black px-3 border-r-2 text-right">{{ attendance.date.day}}</td>
+                                    <td class="border border-black px-4 py-2 text-center">{{ attendance.time_in }}</td>
+                                    <td class="border border-black px-5 py-2 text-center">{{ attendance.time_out }}</td>
+                                    <td class="border border-black px-4 py-2 text-center">{{ attendance.time_in }}</td>
+                                    <td class="border border-black px-4 py-2 text-center">{{ attendance.time_out }}</td>
+                                    <td class="border border-black px-4 py-2 text-center">{{ attendance.undertime_hours }}</td>
+                                    <td class="border border-black px-4 py-2 text-center">{{ attendance.undertime_minutes }}</td>
                                 </tr>
                             {% endfor %}
                         </tbody>
@@ -510,12 +508,9 @@
                     (See Instructions on back)
                 </div>
             </div>
-    <div class="mt-4 flex justify-end">
-        <button onclick="closeAttendanceModal()" class="py-2 px-6 mb-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:bg-blue-700">OK</button>
-    </div>
-</div>
 
-
-
-
+            <div class="flex justify-end mt-4 mb-4"> 
+                <button onclick="closeAttendanceModal()" class="py-2 px-6 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:bg-blue-700">OK</button>
+                <button type="button" class="py-2 px-4 ml-4 bg-green-400 hover:bg-green-500 text-white font-bold rounded-lg shadow-md focus:outline-none focus:bg-green-500" onclick="downloadPdf()">Download PDF</button>            </div>
+            </div>
 {% endblock content%}
